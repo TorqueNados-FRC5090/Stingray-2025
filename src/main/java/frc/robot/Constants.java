@@ -55,6 +55,34 @@ public final class Constants {
             }
         }
     }
+
+    public static final class ElevatorConstants {
+        public static final double ElevatorFactor = 19.189168;
+
+        public enum ElevatorPosition {
+            //elevator setpoints
+            zero(0),
+            trough(1),
+            L2(2),
+            L3(4),
+            L4( 6),
+            AlgaeL2(3),
+            AlgaeL4(4);
+            
+
+
+            private double setpoint;
+            ElevatorPosition(double setpoint) {
+                this.setpoint = setpoint;
+            };
+
+            //gets the angle of setpoint
+            public double getAngle() {
+                return setpoint;
+            }
+        }
+    }
+    
     
     /* -------------- DRIVETRAIN CONSTANTS -------------- */
 
