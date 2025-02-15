@@ -2,7 +2,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +21,8 @@ public class Climber extends SubsystemBase {
 
     public Climber(int climberID, double p){
        climbMotor = new SparkMax(climberID, MotorType.kBrushless);
+       SparkMaxConfig config = new SparkMaxConfig();
+       climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
        climberPID = new GenericPID(climbMotor, ControlType.kPosition, p);
     }
    // moves climber to any position
