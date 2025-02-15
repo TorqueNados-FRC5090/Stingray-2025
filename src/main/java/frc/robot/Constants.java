@@ -28,6 +28,13 @@ public final class Constants {
         public static final int OPERATOR_PORT = 1;
     }
 
+    public static final class ShooterIDs {
+        public static final int SLOW_SENSOR_ID = 20;
+        public static final int STOP_SENSOR_ID = 21;
+        public static final int LEFT_MOTOR_ID = 10;
+        public static final int RIGHT_MOTOR_ID = 11;
+    }
+
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ClimberConstants {
