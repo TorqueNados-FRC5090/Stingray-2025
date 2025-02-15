@@ -2,6 +2,7 @@ package frc.robot;
 
 import static frc.robot.Constants.ControllerPorts.*;
 import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.ShooterIDs.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
+import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Shooter;
@@ -36,7 +38,7 @@ public class RobotContainer {
     // Subsystems
     public final LimeLight frontLimelight = new LimeLight("limelight-ultron");
     public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(frontLimelight);
-    public final Shooter shoot = new Shooter(10, 11);
+    public final Shooter shoot = new Shooter(LEFT_MOTOR_ID, RIGHT_MOTOR_ID, SLOW_SENSOR_ID, STOP_SENSOR_ID);
     private final Climber climber = new Climber(12, .27);
 
     // Misc objects
@@ -50,11 +52,16 @@ public class RobotContainer {
 
         setDriverControls();
         setOperatorControls();
+        setDefaultActions();
     }
 
     /** @return Whether the robot is on the red alliance or not */
     public boolean onRedAlliance() { 
         return DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red);
+    }
+
+    private void setDefaultActions() {
+        shoot.setDefaultCommand(new AutoIntake(shoot));
     }
 
     /** Configures a set of control bindings for the robot's driver */
@@ -90,9 +97,7 @@ public class RobotContainer {
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
         // Runs the auton command as an example binding
-        operatorController.leftTrigger().whileTrue(new Shoot(shoot, -.45));
         operatorController.rightTrigger().whileTrue(new Shoot(shoot, .45));
-        operatorController.rightBumper().whileTrue(new Shoot(shoot, .85));
         operatorController.b().whileTrue(new ClimberUp(climber, ClimberPosition.zero));
         operatorController.x().whileTrue(new ClimberUp(climber, ClimberPosition.climb));
         operatorController.y().whileTrue(new ClimberUp(climber, ClimberPosition.stow));

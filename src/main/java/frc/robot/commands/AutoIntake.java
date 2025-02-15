@@ -20,13 +20,13 @@ public class AutoIntake extends Command{
     @Override
     public void execute() {
         if (auto.isSlowSensorBlocked()) {
-            auto.shoot(.025);
+            auto.shoot(.25);
         }
         else if (auto.isStopSensorBlocked()) {
             auto.shoot(0);
         }
         else {
-            auto.shoot(.5);
+            auto.shoot(.15);
         }
          
         

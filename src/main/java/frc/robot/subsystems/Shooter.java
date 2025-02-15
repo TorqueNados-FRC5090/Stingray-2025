@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -12,8 +12,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase{
-    SparkMax leadMotor;
-    SparkMax followMotor;
+    SparkFlex leadMotor;
+    SparkFlex followMotor;
     // Create a new settings object
     CanandcolorSettings settings;
     // Creates a Canandcolor object referencing a Canandcolor with CAN ID 3
@@ -21,9 +21,9 @@ public class Shooter extends SubsystemBase{
     //Creates a Canandcolor object referencing a Canandcolor with CAN ID 0
     Canandcolor canandcolorStop;  
 
-    public Shooter(int leadID, int followID){
-        leadMotor = new SparkMax(leadID, MotorType.kBrushless);
-        followMotor = new SparkMax(followID, MotorType.kBrushless);
+    public Shooter(int leadID, int followID, int slowID, int stopID){
+        leadMotor = new SparkFlex(leadID, MotorType.kBrushless);
+        followMotor = new SparkFlex(followID, MotorType.kBrushless);
        
        // configuration for follower motor
         SparkMaxConfig followConfig = new SparkMaxConfig();
@@ -31,9 +31,9 @@ public class Shooter extends SubsystemBase{
         
         followMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
 
-        canandcolorSlow = new Canandcolor(20);
+        canandcolorSlow = new Canandcolor(slowID);
         canandcolorSlow.resetFactoryDefaults();
-        canandcolorStop = new Canandcolor(21);
+        canandcolorStop = new Canandcolor(stopID);
         canandcolorStop.resetFactoryDefaults();
 
         settings = new CanandcolorSettings();
@@ -45,7 +45,6 @@ public class Shooter extends SubsystemBase{
 
     public void shoot(double speed){
         leadMotor.set(speed);
-
     }
 
     public void stop(){
@@ -53,9 +52,9 @@ public class Shooter extends SubsystemBase{
     }
     
     public boolean isSlowSensorBlocked() {
-        return canandcolorSlow.getProximity() > .5;
+        return canandcolorSlow.getProximity() <= .05;
     }
     public boolean isStopSensorBlocked() {
-        return canandcolorStop.getProximity() > .5;
+        return canandcolorStop.getProximity() <= .05;
     }
 }
