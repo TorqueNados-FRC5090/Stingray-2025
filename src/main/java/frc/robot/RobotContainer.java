@@ -22,6 +22,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.commands.ClimberUp;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LimeLight;
 
 public class RobotContainer {
@@ -40,6 +41,7 @@ public class RobotContainer {
     public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(frontLimelight);
     public final Shooter shoot = new Shooter(LEFT_MOTOR_ID, RIGHT_MOTOR_ID, SLOW_SENSOR_ID, STOP_SENSOR_ID);
     private final Climber climber = new Climber(12, .27);
+    private final Elevator elevator = new Elevator(15, 16, 0);
 
     // Misc objects
     private final AutonContainer auton = new AutonContainer(this);

@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import static frc.robot.Constants.ElevatorConstants.ElevatorFactor;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,12 +36,14 @@ public class Elevator extends SubsystemBase {
         
             // configuration for leader motor   
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
+        leaderConfig.idleMode(IdleMode.kCoast);
         leaderConfig.encoder.positionConversionFactor(ElevatorFactor);
-            
-            // configuration for follower motor
-        SparkMaxConfig followConfig = new SparkMaxConfig();
-        followConfig.follow(leadMotorID, true);
+        leadMotor.configure(leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         
+        // configuration for follower motor
+        SparkMaxConfig followConfig = new SparkMaxConfig();
+        followConfig.follow(leadMotorID, true)
+            .idleMode(IdleMode.kCoast);
         followerMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
     }
 
@@ -51,6 +55,6 @@ public class Elevator extends SubsystemBase {
     // gives us the height
     @Override
     public void periodic(){
-       SmartDashboard.putNumber(getName(), elevatorPID.getMeasurement());
+       SmartDashboard.putNumber("Elevator Height", elevatorPID.getMeasurement());
     }
 }
