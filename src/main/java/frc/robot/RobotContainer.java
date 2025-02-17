@@ -18,8 +18,10 @@ import frc.robot.commands.AutonContainer;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.ClimberUp;
+import frc.robot.commands.FunnelDrop;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.LimeLight;
 
 public class RobotContainer {
@@ -38,6 +40,7 @@ public class RobotContainer {
     public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(frontLimelight);
     public final Shooter shoot = new Shooter(10, 11);
     private final Climber climber = new Climber(12, .27);
+    private final Funnel funnel = new Funnel();
 
     // Misc objects
     private final AutonContainer auton = new AutonContainer(this);
@@ -83,7 +86,7 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
+        driverController.a().and(driverController.leftBumper()).whileTrue(new FunnelDrop(funnel));
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
