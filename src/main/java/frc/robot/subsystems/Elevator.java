@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import static frc.robot.Constants.ElevatorConstants.ElevatorFactor;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,34 +25,32 @@ public class Elevator extends SubsystemBase {
     public GenericPID elevatorPID;
     public ElevatorPosition pos;
     
-
-
     // Constructor 
     public Elevator(int leadMotorID, int followerMotorID, double p) {
         leadMotor = new SparkMax(leadMotorID, MotorType.kBrushless);
         followerMotor = new SparkMax(followerMotorID, MotorType.kBrushless);
-       
         elevatorPID = new GenericPID(leadMotor, ControlType.kPosition, p);
         
-            // configuration for leader motor   
+        // Configure the elevator motors   
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
+        leaderConfig.idleMode(IdleMode.kCoast);
         leaderConfig.encoder.positionConversionFactor(ElevatorFactor);
-            
-            // configuration for follower motor
-        SparkMaxConfig followConfig = new SparkMaxConfig();
-        followConfig.follow(leadMotorID, true);
+        leadMotor.configure(leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         
+        SparkMaxConfig followConfig = new SparkMaxConfig();
+        followConfig.follow(leadMotorID, true)
+            .idleMode(IdleMode.kCoast);
         followerMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
     }
 
-    // moves the elevator to a specific position
-    public void elevateTo(ElevatorPosition pos){
+    // Moves the elevator to a specific position
+    public void elevateToPosition(ElevatorPosition pos){
         elevatorPID.activate(pos.getAngle());     
     }
  
-    // gives us the height
+    // Print the height to the smartdashboard
     @Override
     public void periodic(){
-       SmartDashboard.putNumber(getName(), elevatorPID.getMeasurement());
+       SmartDashboard.putNumber("Elevator Height", elevatorPID.getMeasurement());
     }
 }
