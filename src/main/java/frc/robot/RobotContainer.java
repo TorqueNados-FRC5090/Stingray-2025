@@ -20,7 +20,6 @@ import frc.robot.commands.AutonContainer;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.commands.ClimberUp;
-import frc.robot.commands.FunnelDrop;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Funnel;
@@ -93,13 +92,13 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        driverController.a().and(driverController.leftBumper()).whileTrue(new FunnelDrop(funnel));
         drivetrain.registerTelemetry(logger::telemeterize);
     }
-
+    
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
         // Runs the auton command as an example binding
+        operatorController.a().and(operatorController.rightBumper()).whileTrue(funnel.funnelDrop());
         operatorController.rightTrigger().whileTrue(new Shoot(shoot, .45));
         operatorController.b().whileTrue(new ClimberUp(climber, ClimberPosition.zero));
         operatorController.x().whileTrue(new ClimberUp(climber, ClimberPosition.climb));

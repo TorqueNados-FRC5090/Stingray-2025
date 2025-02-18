@@ -1,30 +1,42 @@
 package frc.robot.subsystems;
 import com.revrobotics.servohub.ServoChannel;
 import com.revrobotics.servohub.ServoChannel.ChannelId;
-import com.revrobotics.servohub.ServoHub;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.wrappers.ServoManager;
 
 public class Funnel extends SubsystemBase {
 
-    ServoChannel channel3;
+    ServoChannel intakeServo;
     
     public Funnel(){
-      
-        // Initialize the servo hub
-ServoHub servoHub = new ServoHub(3);
-        // Obtain a servo channel controller
- channel3 = servoHub.getServoChannel(ChannelId.kChannelId3);
+      ServoManager manager = new ServoManager(3);
+       
+    // Obtain a servo channel controller
+    intakeServo = manager.getServoInPort(ChannelId.kChannelId3);
+    intakeServo.setPowered(true);
+    intakeServo.setEnabled(true);    
+    }
 
-
-        
+    public Command funnelDrop(){
+        return this.runEnd(
+            () -> unlatch(),
+            () -> zero()
+        );
     }
 
     public void unlatch(){
-        channel3.setPulseWidth(2500);
-        
+        intakeServo.setPulseWidth(2500);
     }
      
     public void zero(){
-        channel3.setPulseWidth(500);
+        intakeServo.setPulseWidth(1500);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Servo", intakeServo.getPulseWidth());
     }
 }
