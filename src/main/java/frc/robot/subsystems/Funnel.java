@@ -10,9 +10,9 @@ import frc.robot.wrappers.ServoManager;
 public class Funnel extends SubsystemBase {
 
     ServoChannel intakeServo;
-    
+
     public Funnel(){
-      ServoManager manager = new ServoManager(3);
+      ServoManager manager = new ServoManager(4);
        
     // Obtain a servo channel controller
     intakeServo = manager.getServoInPort(ChannelId.kChannelId3);

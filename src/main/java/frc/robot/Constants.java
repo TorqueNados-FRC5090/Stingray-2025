@@ -41,8 +41,8 @@ public final class Constants {
         public enum ClimberPosition {
             //climber setpoints
             zero(0),
-            stow(16.4),
-            climb(-41.4);
+            stow(-35),
+            climb(35);
 
             private double setpoint;
             ClimberPosition(double setpoint) {

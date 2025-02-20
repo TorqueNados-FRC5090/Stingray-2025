@@ -103,6 +103,8 @@ public class RobotContainer {
         operatorController.b().whileTrue(new ClimberUp(climber, ClimberPosition.zero));
         operatorController.x().whileTrue(new ClimberUp(climber, ClimberPosition.climb));
         operatorController.y().whileTrue(new ClimberUp(climber, ClimberPosition.stow));
+        operatorController.leftBumper().toggleOnTrue(climber.unlatchClimber());
+
     }
 
     /** Use this to pass the autonomous command to the main {@link Robot} class. */
