@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.ServoPorts.CLIMBER_SERVO_PORT;
 import com.revrobotics.servohub.ServoChannel;
-import com.revrobotics.servohub.ServoChannel.ChannelId;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -31,10 +31,7 @@ public class Climber extends SubsystemBase {
        climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
        climberPID = new GenericPID(climbMotor, ControlType.kPosition, p);
 
-        ServoManager manager = new ServoManager(3);
-        climberServo = manager.getServoInPort(ChannelId.kChannelId2);
-        climberServo.setEnabled(true);
-        climberServo.setPowered(true);
+        climberServo = ServoManager.getInstance().getServoInPort(CLIMBER_SERVO_PORT);
     }
 
     public Command unlatchClimber(){

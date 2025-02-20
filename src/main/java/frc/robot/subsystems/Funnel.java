@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
-import com.revrobotics.servohub.ServoChannel;
-import com.revrobotics.servohub.ServoChannel.ChannelId;
 
+import static frc.robot.Constants.ServoPorts.INTAKE_SERVO_PORT;
+import com.revrobotics.servohub.ServoChannel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,12 +12,7 @@ public class Funnel extends SubsystemBase {
     ServoChannel intakeServo;
 
     public Funnel(){
-      ServoManager manager = new ServoManager(4);
-       
-    // Obtain a servo channel controller
-    intakeServo = manager.getServoInPort(ChannelId.kChannelId3);
-    intakeServo.setPowered(true);
-    intakeServo.setEnabled(true);    
+        intakeServo = ServoManager.getInstance().getServoInPort(INTAKE_SERVO_PORT);
     }
 
     public Command funnelDrop(){

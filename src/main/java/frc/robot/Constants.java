@@ -35,6 +35,12 @@ public final class Constants {
         public static final int RIGHT_MOTOR_ID = 11;
     }
 
+    public static final class ServoPorts {
+        public static final int SERVO_HUB_CAN_ID = 3;
+        public static final int CLIMBER_SERVO_PORT = 2;
+        public static final int INTAKE_SERVO_PORT = 3;
+    }
+
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ClimberConstants {
