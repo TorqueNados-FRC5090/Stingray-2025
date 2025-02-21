@@ -42,7 +42,7 @@ public class RobotContainer {
     public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(frontLimelight);
     public final Shooter shoot = new Shooter(LEFT_MOTOR_ID, RIGHT_MOTOR_ID, SLOW_SENSOR_ID, STOP_SENSOR_ID);
     private final Climber climber = new Climber(12, .27);
-    private final Elevator elevator = new Elevator(15, 16, 0.2);
+    private final Elevator elevator = new Elevator(15, 16);
 
     // Misc objects
     private final AutonContainer auton = new AutonContainer(this);
@@ -101,7 +101,8 @@ public class RobotContainer {
     private void setOperatorControls() {
         // Runs the auton command as an example binding
         operatorController.rightTrigger().whileTrue(new Shoot(shoot, .45));
-        operatorController.leftTrigger().whileTrue(elevator.elevateCommand(ElevatorPosition.L3));
+        operatorController.leftTrigger().whileTrue(elevator.elevateCommand(ElevatorPosition.L4))
+            .whileFalse(elevator.elevateCommand(ElevatorPosition.zero));
         operatorController.b().whileTrue(new ClimberUp(climber, ClimberPosition.zero));
         operatorController.x().whileTrue(new ClimberUp(climber, ClimberPosition.climb));
         operatorController.y().whileTrue(new ClimberUp(climber, ClimberPosition.stow));
