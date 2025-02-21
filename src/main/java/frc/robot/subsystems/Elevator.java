@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.ElevatorConstants.ElevatorFactor;
+import static frc.robot.Constants.ElevatorConstants.ELEVATOR_RATIO;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -27,13 +27,13 @@ public class Elevator extends SubsystemBase {
         leadMotor = new SparkMax(leadMotorID, MotorType.kBrushless);
         followerMotor = new SparkMax(followerMotorID, MotorType.kBrushless);
         elevatorPID = new ProfiledPIDController(.2, 0, 0, 
-            new Constraints(1000, 30));
+            new Constraints(100, 30));
         elevatorPID.setTolerance(1);
         
         // Configure the elevator motors   
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
         leaderConfig.idleMode(IdleMode.kCoast);
-        leaderConfig.encoder.positionConversionFactor(1/ElevatorFactor);
+        leaderConfig.encoder.positionConversionFactor(ELEVATOR_RATIO);
         leadMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         SparkMaxConfig followConfig = new SparkMaxConfig();
@@ -42,20 +42,23 @@ public class Elevator extends SubsystemBase {
         followerMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
     }
 
+    
+    /** @return A command that tells the elevator to go to a position */
+    public Command elevateToPosition(ElevatorPosition pos) {
+        return run(() -> driveElevatorToPosition(pos));
+    }
+
+    // Getters
     public double getPosition() { return leadMotor.getEncoder().getPosition(); }
     public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
 
-    // Moves the elevator to a specific position
-    public void elevateToPosition(ElevatorPosition pos){
+    /** Sends voltage to the elevator to drive it to a position */
+    private void driveElevatorToPosition(ElevatorPosition pos){
         double pidout = elevatorPID.calculate(leadMotor.getEncoder().getPosition(), pos.getHeight());
         leadMotor.setVoltage(pidout * RobotController.getBatteryVoltage());
     }
+    
 
-    public Command elevateCommand(ElevatorPosition pos) {
-        return run(() -> elevateToPosition(pos));
-    }
- 
-    // Print the height to the smartdashboard
     @Override
     public void periodic(){
        SmartDashboard.putNumber("Elevator Height", getPosition());

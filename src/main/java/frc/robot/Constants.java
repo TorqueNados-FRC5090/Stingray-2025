@@ -38,18 +38,23 @@ public final class Constants {
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ClimberConstants {
+        /** Converts climber motor revolutions to degrees of climber travel */
+        public static final double CLIMBER_RATIO = 1;
+
         public enum ClimberPosition {
-            //climber setpoints
-            zero(0),
-            stow(16.4),
-            climb(-41.4);
+            /** Vertical */
+            ZERO(0),
+            /** Out of robot, used to line up with cage */
+            PREPARE(90),
+            /** Inside robot, used when engaged with cage */
+            CLIMB(-90);
 
             private double setpoint;
             ClimberPosition(double setpoint) {
                 this.setpoint = setpoint;
             };
 
-            //gets the angle of setpoint
+            /** @return The angle of the climber associated with the setpoint */
             public double getAngle() {
                 return setpoint;
             }
@@ -57,12 +62,12 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final double ElevatorFactor = 25.4 * (1 / 19.189168);
+        /** Converts elevator motor revolutions to inches of shooter travel */
+        public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
 
         public enum ElevatorPosition {
-            //elevator setpoints
-            zero(0),
-            trough(6.5),
+            ZERO(0),
+            TROUGH(6.5),
             L2(13.8),
             L3(29.4),
             L4( 54);
@@ -72,7 +77,7 @@ public final class Constants {
                 this.setpoint = setpoint;
             };
 
-            //gets the angle of setpoint
+            /** @return  */
             public double getHeight() {
                 return setpoint;
             }

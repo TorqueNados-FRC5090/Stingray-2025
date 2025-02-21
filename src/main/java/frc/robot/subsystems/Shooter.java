@@ -9,52 +9,61 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase{
     SparkFlex leadMotor;
     SparkFlex followMotor;
-    // Create a new settings object
+    Canandcolor entrySensor;
+    Canandcolor exitSensor;  
     CanandcolorSettings settings;
-    // Creates a Canandcolor object referencing a Canandcolor with CAN ID 3
-    Canandcolor canandcolorSlow;
-    //Creates a Canandcolor object referencing a Canandcolor with CAN ID 0
-    Canandcolor canandcolorStop;  
 
-    public Shooter(int leadID, int followID, int slowID, int stopID){
+    public Shooter(int leadID, int followID, int entrySensorID, int exitSensorID){
         leadMotor = new SparkFlex(leadID, MotorType.kBrushless);
         followMotor = new SparkFlex(followID, MotorType.kBrushless);
        
-       // configuration for follower motor
+        // Configure the motors
         SparkMaxConfig followConfig = new SparkMaxConfig();
         followConfig.follow(leadID, true);
-        
         followMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
 
-        canandcolorSlow = new Canandcolor(slowID);
-        canandcolorSlow.resetFactoryDefaults();
-        canandcolorStop = new Canandcolor(stopID);
-        canandcolorStop.resetFactoryDefaults();
-
+        // Initialize and configure the sensors
+        entrySensor = new Canandcolor(entrySensorID);
+        entrySensor.resetFactoryDefaults();
+        exitSensor = new Canandcolor(exitSensorID);
+        exitSensor.resetFactoryDefaults();
         settings = new CanandcolorSettings();
+
         settings.setLampLEDBrightness(0);
-
-        canandcolorSlow.setSettings(settings);
-        canandcolorStop.setSettings(settings);
+        entrySensor.setSettings(settings);
+        exitSensor.setSettings(settings);
     }
 
-    public void shoot(double speed){
-        leadMotor.set(speed);
+
+    /** @return A command that drives the shooter at a given speed and stops when the command is cancelled */
+    public Command shoot(double speed) {
+        return runEnd(
+            () -> spin(speed), 
+            () -> stop()
+        );
     }
 
-    public void stop(){
-        leadMotor.set(0);
-    }
-    
-    public boolean isSlowSensorBlocked() {
-        return canandcolorSlow.getProximity() <= .05;
-    }
-    public boolean isStopSensorBlocked() {
-        return canandcolorStop.getProximity() <= .05;
+
+    public void spin(double speed) { leadMotor.set(speed); }
+    public void stop() { leadMotor.stopMotor(); }
+
+    /** @return Whether there is a piece in front of the sensor at the end of the shooter */
+    public boolean isEntrySensorBlocked() { return entrySensor.getProximity() <= .05; }
+    /** @return Whether there is a piece in front of the sensor at the robot's intake */
+    public boolean isExitSensorBlocked() { return exitSensor.getProximity() <= .05; }
+
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Shooter RPM", leadMotor.getEncoder().getVelocity());
+        SmartDashboard.putBoolean("Shooter Entry Sensor", isEntrySensorBlocked());
+        SmartDashboard.putBoolean("Shooter Exit Sensor", isExitSensorBlocked());
     }
 }
