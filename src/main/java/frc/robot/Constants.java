@@ -62,15 +62,11 @@ public final class Constants {
         public enum ElevatorPosition {
             //elevator setpoints
             zero(0),
-            trough(1),
-            L2(2),
-            L3(4),
-            L4( 6),
-            AlgaeL2(3),
-            AlgaeL4(4);
+            trough(6.5),
+            L2(13.8),
+            L3(29.4),
+            L4( 54);
             
-
-
             private double setpoint;
             ElevatorPosition(double setpoint) {
                 this.setpoint = setpoint;
