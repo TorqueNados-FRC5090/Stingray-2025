@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static frc.robot.Constants.ElevatorConstants.ElevatorFactor;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -35,7 +36,7 @@ public class Elevator extends SubsystemBase {
         // Configure the elevator motors   
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
         leaderConfig.idleMode(IdleMode.kCoast);
-        leadMotor.configure(leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        leadMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         SparkMaxConfig followConfig = new SparkMaxConfig();
         followConfig.follow(leadMotorID, true)
@@ -45,7 +46,14 @@ public class Elevator extends SubsystemBase {
 
     // Moves the elevator to a specific position
     public void elevateToPosition(ElevatorPosition pos){
-        elevatorPID.activate(pos.getAngle());     
+        elevatorPID.activate(pos.getHeight());     
+    }
+
+    public Command elevateCommand(ElevatorPosition pos) {
+        return runEnd(
+            () -> elevateToPosition(pos), 
+            () -> elevateToPosition(ElevatorPosition.zero)
+        );
     }
  
     // Print the height to the smartdashboard

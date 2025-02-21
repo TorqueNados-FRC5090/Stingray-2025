@@ -77,7 +77,7 @@ public final class Constants {
             };
 
             //gets the angle of setpoint
-            public double getAngle() {
+            public double getHeight() {
                 return setpoint;
             }
         }
