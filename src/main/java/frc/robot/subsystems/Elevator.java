@@ -30,11 +30,11 @@ public class Elevator extends SubsystemBase {
         leadMotor = new SparkMax(leadMotorID, MotorType.kBrushless);
         followerMotor = new SparkMax(followerMotorID, MotorType.kBrushless);
         elevatorPID = new GenericPID(leadMotor, ControlType.kPosition, p);
+        elevatorPID.setRatio(ElevatorFactor);
         
         // Configure the elevator motors   
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
         leaderConfig.idleMode(IdleMode.kCoast);
-        leaderConfig.encoder.positionConversionFactor(ElevatorFactor);
         leadMotor.configure(leaderConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         
         SparkMaxConfig followConfig = new SparkMaxConfig();

@@ -57,7 +57,7 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final double ElevatorFactor = 19.189168;
+        public static final double ElevatorFactor = 25.4 * (1 / 19.189168);
 
         public enum ElevatorPosition {
             //elevator setpoints
