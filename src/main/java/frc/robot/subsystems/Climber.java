@@ -10,6 +10,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,6 +30,7 @@ public class Climber extends SubsystemBase {
        climberPID = new GenericPID(climbMotor, ControlType.kPosition, P_GAIN);
 
        SparkMaxConfig config = new SparkMaxConfig();
+       config.idleMode(IdleMode.kCoast);
        config.encoder.positionConversionFactor(CLIMBER_RATIO);
        climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -51,6 +54,7 @@ public class Climber extends SubsystemBase {
 
     /** Drives the climber to a position using the PID controller on its controller */
     public void driveClimberToPosition(ClimberPosition pos) { 
+        climberServo.setPulseWidth(pos.getServoPos());
         climberPID.activate(pos.getAngle()); 
     }
     

@@ -44,7 +44,7 @@ public final class Constants {
     }
 
     public static final class ClimberConstants {
-        public static final int MOTOR_ID = 11;
+        public static final int MOTOR_ID = 12;
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
@@ -52,20 +52,27 @@ public final class Constants {
 
         public enum ClimberPosition {
             /** Vertical */
-            ZERO(0),
+            ZERO(0,2000),
             /** Out of robot, used to line up with cage */
-            PREPARE(90),
+            PREPARE(80, 2000),
             /** Inside robot, used when engaged with cage */
-            CLIMB(-90);
+            CLIMB(-80, 500);
 
+            private int pulseWidth;
             private double setpoint;
-            ClimberPosition(double setpoint) {
+            ClimberPosition(double setpoint, int pulseWidth) {
                 this.setpoint = setpoint;
+                this.pulseWidth = pulseWidth;
             };
 
             /** @return The angle of the climber associated with the setpoint */
             public double getAngle() {
                 return setpoint;
+            }
+
+            /** @return The position of the servo associated with the pulse width */
+            public int getServoPos() {
+                return pulseWidth;
             }
         }
     }
