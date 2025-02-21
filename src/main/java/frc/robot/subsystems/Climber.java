@@ -1,46 +1,46 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.ClimberConstants.*;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.wrappers.GenericPID;
 
 public class Climber extends SubsystemBase {
-    
     SparkMax climbMotor;
     GenericPID climberPID;
-    ClimberPosition pos;
     
+    // Constructor
+    public Climber() {
+       climbMotor = new SparkMax(MOTOR_ID, MotorType.kBrushless);
+       climberPID = new GenericPID(climbMotor, ControlType.kPosition, P_GAIN);
 
-    public Climber(int climberID, double p){
-       climbMotor = new SparkMax(climberID, MotorType.kBrushless);
        SparkMaxConfig config = new SparkMaxConfig();
+       config.encoder.positionConversionFactor(CLIMBER_RATIO);
        climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-       climberPID = new GenericPID(climbMotor, ControlType.kPosition, p);
-    }
-   // moves climber to any position
-    public void moveClimber(double speed){
-        climbMotor.set(speed);
     }
 
-    // moves climber to setpoints
-    public void climbTo(ClimberPosition pos){
-        climberPID.activate(pos.getAngle());
+
+    /** @return A command that moves the climber to a position */
+    public Command climbToPosition(ClimberPosition pos) {
+        return runOnce(() -> driveClimberToPosition(pos));
     }
 
-    public void stop(){
-        climbMotor.set(0);
-    }
 
+    /** Drives the climber to a position using the PID controller on its controller */
+    public void driveClimberToPosition(ClimberPosition pos) { climberPID.activate(pos.getAngle()); }
+
+    
     @Override
-    public void periodic(){
-       SmartDashboard.putNumber(getName(), climberPID.getMeasurement()); 
+    public void periodic() {
+       SmartDashboard.putNumber("Climber Angle", climberPID.getMeasurement()); 
     }
 }

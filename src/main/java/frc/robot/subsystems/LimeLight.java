@@ -44,9 +44,4 @@ public class LimeLight extends SubsystemBase {
         int state = on ? 3 : 1; // Convert boolean into setting number
         table.getEntry("ledMode").setNumber(state);
     }
-    /** @param on Whether the camera should be set to driver mode */
-    public void setDriverMode(boolean on) {
-        int state = on ? 1 : 0; // Convert boolean into setting number
-        table.getEntry("camMode").setNumber(state);
-    }
 }
