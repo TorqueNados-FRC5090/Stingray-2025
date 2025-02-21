@@ -28,9 +28,11 @@ public final class Constants {
         public static final int OPERATOR_PORT = 1;
     }
 
-    public static final class ShooterIDs {
-        public static final int SLOW_SENSOR_ID = 20;
-        public static final int STOP_SENSOR_ID = 21;
+    /* -------------- SUBSYTEM CONSTANTS -------------- */
+
+    public static final class ShooterConstants {
+        public static final int ENTRY_SENSOR_ID = 20;
+        public static final int EXIT_SENSOR_ID = 21;
         public static final int LEFT_MOTOR_ID = 10;
         public static final int RIGHT_MOTOR_ID = 11;
     }
@@ -41,26 +43,60 @@ public final class Constants {
         public static final int INTAKE_SERVO_PORT = 3;
     }
 
-    /* -------------- SUBSYTEM CONSTANTS -------------- */
-
     public static final class ClimberConstants {
+        public static final int MOTOR_ID = 11;
+        public static final double P_GAIN = .27;
+
+        /** Converts climber motor revolutions to degrees of climber travel */
+        public static final double CLIMBER_RATIO = 2.4;
+
         public enum ClimberPosition {
-            //climber setpoints
-            zero(0),
-            stow(-35),
-            climb(35);
+            /** Vertical */
+            ZERO(0),
+            /** Out of robot, used to line up with cage */
+            PREPARE(90),
+            /** Inside robot, used when engaged with cage */
+            CLIMB(-90);
 
             private double setpoint;
             ClimberPosition(double setpoint) {
                 this.setpoint = setpoint;
             };
 
-            //gets the angle of setpoint
+            /** @return The angle of the climber associated with the setpoint */
             public double getAngle() {
                 return setpoint;
             }
         }
     }
+
+    public static final class ElevatorConstants {
+        public static final int LEFT_MOTOR_ID = 15;
+        public static final int RIGHT_MOTOR_ID = 16;
+        public static final double P_GAIN = .25;
+        
+        /** Converts elevator motor revolutions to inches of shooter travel */
+        public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
+
+        public enum ElevatorPosition {
+            ZERO(0),
+            TROUGH(6.5),
+            L2(13.8),
+            L3(29.4),
+            L4( 54);
+            
+            private double setpoint;
+            ElevatorPosition(double setpoint) {
+                this.setpoint = setpoint;
+            };
+
+            /** @return  */
+            public double getHeight() {
+                return setpoint;
+            }
+        }
+    }
+    
     
     /* -------------- DRIVETRAIN CONSTANTS -------------- */
 
