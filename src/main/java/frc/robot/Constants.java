@@ -35,6 +35,26 @@ public final class Constants {
         public static final int EXIT_SENSOR_ID = 21;
         public static final int LEFT_MOTOR_ID = 10;
         public static final int RIGHT_MOTOR_ID = 11;
+        public static final double P_GAIN = .27;
+
+        public enum ShooterPosition {
+            /** Intake */
+            Intake1(1.5),
+            /** Slow */
+            Slow(0.75),
+            /** Increment */
+            Inc(.5);
+
+            private double setpoint;
+            ShooterPosition(double setpoint) {
+                this.setpoint = setpoint;
+            };
+
+            /** @return The angle of the Shooter associated with the setpoint */
+            public double getcurrentpos() {
+                return setpoint;
+            }
+        }
     }
 
     public static final class ServoPorts {
