@@ -20,7 +20,7 @@ public class Elevator extends SubsystemBase {
     public SparkMax leadMotor;
     public SparkMax followerMotor; 
     public ProfiledPIDController elevatorPID;
-    public ElevatorPosition pos;
+    public ElevatorPosition lastPosition = ElevatorPosition.ZERO;
     
     // Constructor 
     public Elevator() {
@@ -51,9 +51,11 @@ public class Elevator extends SubsystemBase {
     // Getters
     public double getPosition() { return leadMotor.getEncoder().getPosition(); }
     public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
+    public ElevatorPosition getLatestPosition() { return lastPosition; }
 
     /** Sends voltage to the elevator to drive it to a position */
-    private void driveElevatorToPosition(ElevatorPosition pos){
+    private void driveElevatorToPosition(ElevatorPosition pos) {
+        lastPosition = pos;
         double pidout = elevatorPID.calculate(leadMotor.getEncoder().getPosition(), pos.getHeight());
         leadMotor.setVoltage(pidout * RobotController.getBatteryVoltage());
     }
