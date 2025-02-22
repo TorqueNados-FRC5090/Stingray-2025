@@ -100,7 +100,10 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int LEFT_MOTOR_ID = 15;
         public static final int RIGHT_MOTOR_ID = 16;
-        public static final double P_GAIN = .25;
+        public static final double P_GAIN = .225;
+        public static final double D_GAIN = .005;
+        public static final double VEL_LIMIT = 100;
+        public static final double ACCEL_LIMIT = 59;
         
         /** Converts elevator motor revolutions to inches of shooter travel */
         public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));

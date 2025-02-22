@@ -62,7 +62,7 @@ public class RobotContainer {
 
     private void setDefaultActions() {
         shooter.setDefaultCommand(new AutoIntake(shooter));
-        elevator.setDefaultCommand(elevator.elevateToPosition(ElevatorPosition.ZERO));
+        elevator.setDefaultCommand(elevator.elevateToPosition(ElevatorPosition.L2));
     }
 
     /** Configures a set of control bindings for the robot's driver */
@@ -78,17 +78,19 @@ public class RobotContainer {
         );
 
         // reset the field-centric heading on left bumper press
-        driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.leftBumper().onTrue(drivetrain.runOnce(() ->   drivetrain.seedFieldCentric()));
         driverController.x().whileTrue(drivetrain.applyRequest(() -> brake));
     }
     
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
         operatorController.rightTrigger().whileTrue(shooter.shoot(.5));
-        operatorController.leftBumper().whileTrue(shooter.shoot(-.5));
-        operatorController.leftTrigger().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
-        operatorController.a().and(operatorController.rightBumper()).whileTrue(funnel.funnelDrop());
-
+        operatorController.leftTrigger().whileTrue(shooter.shoot(-.5));
+        
+        operatorController.leftBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L2));
+        operatorController.rightBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L3));
+        
+        operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
         operatorController.x().onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
         operatorController.y().onTrue(climber.climbToPosition(ClimberPosition.ZERO));
         operatorController.b().onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
