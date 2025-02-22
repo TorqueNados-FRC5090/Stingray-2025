@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.ElevatorConstants.*;
+import static frc.robot.Constants.SubsystemIDs.ELEVATOR_LEFT_MOTOR_ID;
+import static frc.robot.Constants.SubsystemIDs.ELEVATOR_RIGHT_MOTOR_ID;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -20,14 +23,15 @@ public class Elevator extends SubsystemBase {
     public SparkMax leadMotor;
     public SparkMax followerMotor; 
     public ProfiledPIDController elevatorPID;
-    public ElevatorPosition pos;
+    public ElevatorPosition lastPosition = ElevatorPosition.ZERO;
     
+
     // Constructor 
     public Elevator() {
-        leadMotor = new SparkMax(LEFT_MOTOR_ID, MotorType.kBrushless);
-        followerMotor = new SparkMax(RIGHT_MOTOR_ID, MotorType.kBrushless);
-        elevatorPID = new ProfiledPIDController(P_GAIN, 0, 0, 
-            new Constraints(100, 30));
+        leadMotor = new SparkMax(ELEVATOR_LEFT_MOTOR_ID, MotorType.kBrushless);
+        followerMotor = new SparkMax(ELEVATOR_RIGHT_MOTOR_ID, MotorType.kBrushless);
+        elevatorPID = new ProfiledPIDController(P_GAIN, 0, D_GAIN, 
+            new Constraints(VEL_LIMIT, ACCEL_LIMIT));
         elevatorPID.setTolerance(1);
         
         // Configure the elevator motors   
@@ -51,9 +55,11 @@ public class Elevator extends SubsystemBase {
     // Getters
     public double getPosition() { return leadMotor.getEncoder().getPosition(); }
     public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
+    public ElevatorPosition getLatestPosition() { return lastPosition; }
 
     /** Sends voltage to the elevator to drive it to a position */
-    private void driveElevatorToPosition(ElevatorPosition pos){
+    private void driveElevatorToPosition(ElevatorPosition pos) {
+        lastPosition = pos;
         double pidout = elevatorPID.calculate(leadMotor.getEncoder().getPosition(), pos.getHeight());
         leadMotor.setVoltage(pidout * RobotController.getBatteryVoltage());
     }
@@ -61,7 +67,7 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic(){
-       SmartDashboard.putNumber("Elevator Height", getPosition());
-       SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
+        SmartDashboard.putNumber("Elevator Height", getPosition());
+        SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
     }
 }
