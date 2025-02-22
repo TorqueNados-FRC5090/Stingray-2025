@@ -22,12 +22,13 @@ public class Elevator extends SubsystemBase {
     public ProfiledPIDController elevatorPID;
     public ElevatorPosition pos;
     
+
     // Constructor 
     public Elevator() {
         leadMotor = new SparkMax(LEFT_MOTOR_ID, MotorType.kBrushless);
         followerMotor = new SparkMax(RIGHT_MOTOR_ID, MotorType.kBrushless);
-        elevatorPID = new ProfiledPIDController(P_GAIN, 0, 0, 
-            new Constraints(100, 30));
+        elevatorPID = new ProfiledPIDController(P_GAIN, 0, D_GAIN, 
+            new Constraints(VEL_LIMIT, ACCEL_LIMIT));
         elevatorPID.setTolerance(1);
         
         // Configure the elevator motors   
@@ -61,7 +62,7 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic(){
-       SmartDashboard.putNumber("Elevator Height", getPosition());
-       SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
+        SmartDashboard.putNumber("Elevator Height", getPosition());
+        SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
     }
 }

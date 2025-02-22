@@ -59,7 +59,7 @@ public class RobotContainer {
 
     private void setDefaultActions() {
         shooter.setDefaultCommand(new AutoIntake(shooter));
-        elevator.setDefaultCommand(elevator.elevateToPosition(ElevatorPosition.ZERO));
+        elevator.setDefaultCommand(elevator.elevateToPosition(ElevatorPosition.L2));
     }
 
     /** Configures a set of control bindings for the robot's driver */
@@ -75,7 +75,7 @@ public class RobotContainer {
         );
 
         // reset the field-centric heading on left bumper press
-        driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.leftBumper().onTrue(drivetrain.runOnce(() ->   drivetrain.seedFieldCentric()));
         driverController.x().whileTrue(drivetrain.applyRequest(() -> brake));
     }
 
@@ -83,7 +83,7 @@ public class RobotContainer {
     private void setOperatorControls() {
         // Runs the auton command as an example binding
         operatorController.rightTrigger().whileTrue(shooter.shoot(.5));
-        operatorController.leftTrigger().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
+        operatorController.leftTrigger().whileTrue(elevator.elevateToPosition(ElevatorPosition.L3));
 
         operatorController.x().whileTrue(climber.climbToPosition(ClimberPosition.CLIMB));
         operatorController.y().whileTrue(climber.climbToPosition(ClimberPosition.ZERO));
