@@ -26,19 +26,13 @@ public class AutoIntake extends Command{
         }
         else if (shooter.isEntrySensorBlocked() && counter == 2)
             shooter.driveShooterToPosition(ShooterPosition.Slow.getcurrentpos()+shooter.getshooterposition());
-
-        else if (!shooter.isEntrySensorBlocked() && shooter.isExitSensorBlocked()){
-            counter = 3;
-            shooter.driveShooterToPosition(shooter.getshooterposition() - ShooterPosition.Inc.getcurrentpos());            
-        }
-        else if (counter == 3){
-            counter = 1;
-            shooter.driveShooterToPosition(shooter.getshooterposition() + ShooterPosition.Slow.getcurrentpos());            
-        }
-        else if (shooter.isExitSensorBlocked())
+            
+        else if (shooter.isExitSensorBlocked()){
             shooter.spin(0);
+            counter = 1;
+        }
         else 
-            shooter.spin(.15);
+            shooter.spin(.07);
     }
 
     // Called once the command ends or is interrupted.
