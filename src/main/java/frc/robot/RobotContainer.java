@@ -1,7 +1,14 @@
 package frc.robot;
 
-import static frc.robot.Constants.ControllerPorts.*;
-import static frc.robot.Constants.DriveConstants.*;
+import static frc.robot.Constants.ControllerPorts.DRIVER_PORT;
+import static frc.robot.Constants.ControllerPorts.OPERATOR_PORT;
+import static frc.robot.Constants.DriveConstants.MAX_ROTATION_SPEED;
+import static frc.robot.Constants.DriveConstants.MAX_TRANSLATION_SPEED;
+import static frc.robot.Constants.DriveConstants.ROTATION_DEADBAND;
+import static frc.robot.Constants.DriveConstants.TRANSLATION_DEADBAND;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -12,14 +19,14 @@ import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
-import frc.robot.subsystems.Shooter;
+import frc.robot.commands.LEDControl;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
+import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LimeLight;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
     // CTRE drivetrain control functions
@@ -38,7 +45,8 @@ public class RobotContainer {
     private final Funnel funnel = new Funnel();
     public final Shooter shooter = new Shooter();
     private final Climber climber = new Climber();
-    private final Elevator elevator = new Elevator();
+    public final Elevator elevator = new Elevator();
+    public final Candle candleLEDS = new Candle();
 
     // Misc objects
     private final AutonContainer auton = new AutonContainer(this);
@@ -62,7 +70,8 @@ public class RobotContainer {
 
     private void setDefaultActions() {
         shooter.setDefaultCommand(new AutoIntake(shooter));
-        elevator.setDefaultCommand(elevator.elevateToPosition(ElevatorPosition.L2));
+        elevator.setDefaultCommand(elevator.elevateToPosition(ElevatorPosition.ZERO));
+        candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
     }
 
     /** Configures a set of control bindings for the robot's driver */

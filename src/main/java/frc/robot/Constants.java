@@ -31,6 +31,7 @@ public final class Constants {
     public static final class SubsystemIDs {
         public static final int SERVO_HUB_CAN_ID = 3;
         public static final int INTAKE_SERVO_PORT = 3;
+        public static final int CANDLE_ID = 13;
 
         public static final int CLIMBER_MOTOR_ID = 12;
         public static final int CLIMBER_SERVO_PORT = 2;
@@ -100,6 +101,51 @@ public final class Constants {
             public int getServoPos() {
                 return pulseWidth;
             }
+        }
+    }
+
+    public static final class LEDConstants {
+        public static enum LEDColor {
+            RED(255, 0, 0),
+            GREEN(25, 255, 0),
+            BLUE(0, 10, 181),
+            YELLOW(255, 100, 0),
+            PURPLE(162, 18, 184),
+            PINK(255, 166, 238),
+            LIGHT_BLUE(125, 212, 255),
+            ORANGE(180, 20, 0),
+            WHITE(255, 255, 255);
+
+            private int red;
+            private int green;
+            private int blue;
+             
+            LEDColor(int red, int green, int blue) {
+                this.red = red;
+                this.green = green;
+                this.blue = blue;
+            }
+
+            public int getRed() { return red; }
+            public int getGreen() { return green; }
+            public int getBlue() { return blue; }
+        }
+
+        public static enum LEDStrip {
+              CANDLE(0, 8),
+              SHOOTER(8, 60),
+              INTAKE(68, 31);
+
+              private int startingIndex;
+              private int stripLength;
+
+              LEDStrip(int startingIndex, int stripLength){
+                  this.startingIndex = startingIndex;
+                  this.stripLength = stripLength;
+              }
+
+              public int getStartingIndex() { return startingIndex; }
+              public int getStripLength() { return stripLength; }
         }
     }
 
