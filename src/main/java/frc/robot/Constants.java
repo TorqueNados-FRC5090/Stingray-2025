@@ -28,13 +28,25 @@ public final class Constants {
         public static final int OPERATOR_PORT = 1;
     }
 
+    public static final class SubsystemIDs {
+        public static final int SERVO_HUB_CAN_ID = 3;
+        public static final int INTAKE_SERVO_PORT = 3;
+
+        public static final int CLIMBER_MOTOR_ID = 12;
+        public static final int CLIMBER_SERVO_PORT = 2;
+
+        public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
+        public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
+
+        public static final int SHOOTER_ENTRY_SENSOR_ID = 20;
+        public static final int SHOOTER_EXIT_SENSOR_ID = 21;
+        public static final int SHOOTER_LEFT_MOTOR_ID = 10;
+        public static final int SHOOTER_RIGHT_MOTOR_ID = 11;
+    }
+
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ShooterConstants {
-        public static final int ENTRY_SENSOR_ID = 20;
-        public static final int EXIT_SENSOR_ID = 21;
-        public static final int LEFT_MOTOR_ID = 10;
-        public static final int RIGHT_MOTOR_ID = 11;
         public static final double P_GAIN = .27;
 
         public enum ShooterPosition {
@@ -57,14 +69,8 @@ public final class Constants {
         }
     }
 
-    public static final class ServoPorts {
-        public static final int SERVO_HUB_CAN_ID = 3;
-        public static final int CLIMBER_SERVO_PORT = 2;
-        public static final int INTAKE_SERVO_PORT = 3;
-    }
 
     public static final class ClimberConstants {
-        public static final int MOTOR_ID = 12;
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
@@ -98,8 +104,6 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final int LEFT_MOTOR_ID = 15;
-        public static final int RIGHT_MOTOR_ID = 16;
         public static final double P_GAIN = .225;
         public static final double D_GAIN = .005;
         public static final double VEL_LIMIT = 100;

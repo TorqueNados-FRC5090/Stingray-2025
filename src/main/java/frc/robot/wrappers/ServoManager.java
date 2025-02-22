@@ -1,6 +1,6 @@
 package frc.robot.wrappers;
 
-import static frc.robot.Constants.ServoPorts.SERVO_HUB_CAN_ID;
+import static frc.robot.Constants.SubsystemIDs.SERVO_HUB_CAN_ID;
 import com.revrobotics.servohub.ServoChannel;
 import com.revrobotics.servohub.ServoHub;
 

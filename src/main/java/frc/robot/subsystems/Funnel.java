@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.ServoPorts.INTAKE_SERVO_PORT;
+import static frc.robot.Constants.SubsystemIDs.INTAKE_SERVO_PORT;
 import com.revrobotics.servohub.ServoChannel;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;

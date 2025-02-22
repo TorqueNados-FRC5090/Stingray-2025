@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.ElevatorConstants.*;
+import static frc.robot.Constants.SubsystemIDs.ELEVATOR_LEFT_MOTOR_ID;
+import static frc.robot.Constants.SubsystemIDs.ELEVATOR_RIGHT_MOTOR_ID;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -25,8 +28,8 @@ public class Elevator extends SubsystemBase {
 
     // Constructor 
     public Elevator() {
-        leadMotor = new SparkMax(LEFT_MOTOR_ID, MotorType.kBrushless);
-        followerMotor = new SparkMax(RIGHT_MOTOR_ID, MotorType.kBrushless);
+        leadMotor = new SparkMax(ELEVATOR_LEFT_MOTOR_ID, MotorType.kBrushless);
+        followerMotor = new SparkMax(ELEVATOR_RIGHT_MOTOR_ID, MotorType.kBrushless);
         elevatorPID = new ProfiledPIDController(P_GAIN, 0, D_GAIN, 
             new Constraints(VEL_LIMIT, ACCEL_LIMIT));
         elevatorPID.setTolerance(1);

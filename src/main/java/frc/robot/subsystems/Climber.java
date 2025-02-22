@@ -2,7 +2,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.servohub.ServoChannel;
 import static frc.robot.Constants.ClimberConstants.*;
-import static frc.robot.Constants.ServoPorts.CLIMBER_SERVO_PORT;
+import static frc.robot.Constants.SubsystemIDs.CLIMBER_MOTOR_ID;
+import static frc.robot.Constants.SubsystemIDs.CLIMBER_SERVO_PORT;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -27,7 +28,7 @@ public class Climber extends SubsystemBase {
     
     // Constructor
     public Climber() {
-       climbMotor = new SparkMax(MOTOR_ID, MotorType.kBrushless);
+       climbMotor = new SparkMax(CLIMBER_MOTOR_ID, MotorType.kBrushless);
        climberPID = new GenericPID(climbMotor, ControlType.kPosition, P_GAIN);
 
        SparkMaxConfig config = new SparkMaxConfig();

@@ -2,6 +2,10 @@ package frc.robot.subsystems;
 
 
 import com.revrobotics.spark.SparkFlex;
+import static frc.robot.Constants.SubsystemIDs.SHOOTER_ENTRY_SENSOR_ID;
+import static frc.robot.Constants.SubsystemIDs.SHOOTER_EXIT_SENSOR_ID;
+import static frc.robot.Constants.SubsystemIDs.SHOOTER_LEFT_MOTOR_ID;
+import static frc.robot.Constants.SubsystemIDs.SHOOTER_RIGHT_MOTOR_ID;
 import static frc.robot.Constants.ShooterConstants.*;
 
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
@@ -27,8 +31,8 @@ public class Shooter extends SubsystemBase{
     GenericPID ShooterPID;
 
     public Shooter(){
-        leadMotor = new SparkFlex(LEFT_MOTOR_ID, MotorType.kBrushless);
-        followMotor = new SparkFlex(RIGHT_MOTOR_ID, MotorType.kBrushless);
+        leadMotor = new SparkFlex(SHOOTER_LEFT_MOTOR_ID, MotorType.kBrushless);
+        followMotor = new SparkFlex(SHOOTER_RIGHT_MOTOR_ID, MotorType.kBrushless);
         ShooterPID = new GenericPID(leadMotor, ControlType.kPosition, P_GAIN);
        
         // Configure the motors
@@ -39,9 +43,9 @@ public class Shooter extends SubsystemBase{
         followMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
 
         // Initialize and configure the sensors
-        entrySensor = new Canandcolor(ENTRY_SENSOR_ID);
+        entrySensor = new Canandcolor(SHOOTER_ENTRY_SENSOR_ID);
         entrySensor.resetFactoryDefaults();
-        exitSensor = new Canandcolor(EXIT_SENSOR_ID);
+        exitSensor = new Canandcolor(SHOOTER_EXIT_SENSOR_ID);
         exitSensor.resetFactoryDefaults();
         settings = new CanandcolorSettings();
 
