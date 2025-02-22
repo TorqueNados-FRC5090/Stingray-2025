@@ -85,12 +85,13 @@ public class RobotContainer {
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
         operatorController.rightTrigger().whileTrue(shooter.shoot(.5));
+        operatorController.leftBumper().whileTrue(shooter.shoot(-.5));
         operatorController.leftTrigger().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
         operatorController.a().and(operatorController.rightBumper()).whileTrue(funnel.funnelDrop());
 
-        operatorController.x().whileTrue(climber.climbToPosition(ClimberPosition.CLIMB));
-        operatorController.y().whileTrue(climber.climbToPosition(ClimberPosition.ZERO));
-        operatorController.b().whileTrue(climber.climbToPosition(ClimberPosition.PREPARE));
+        operatorController.x().onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
+        operatorController.y().onTrue(climber.climbToPosition(ClimberPosition.ZERO));
+        operatorController.b().onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
     }
 
     /** Use this to pass the autonomous command to the main {@link Robot} class. */

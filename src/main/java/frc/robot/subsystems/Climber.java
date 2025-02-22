@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.wrappers.GenericPID;
 import frc.robot.wrappers.ServoManager;
@@ -37,36 +38,28 @@ public class Climber extends SubsystemBase {
        climberServo = ServoManager.getInstance().getServoInPort(CLIMBER_SERVO_PORT);
     }
 
-    
-    
-    /** @return A command that moves the climber to a position */
-    public Command climbToPosition(ClimberPosition pos) {
-        return runOnce(() -> driveClimberToPosition(pos));
+    /** Puts servo in position, then moves the climber  */
+    public Command climbToPosition(ClimberPosition pos){
+        return setServoLock(pos)
+            .withDeadline(new WaitCommand(.5))
+            .andThen(driveClimberToPosition(pos));
     }
-    
-    public Command unlatchClimber(){
-        return this.runEnd(
-            () -> lockClimber(),
-            () -> unlockClimber()
-        );
-    }
+   
+  
+   
 
 
     /** Drives the climber to a position using the PID controller on its controller */
-    public void driveClimberToPosition(ClimberPosition pos) { 
-        climberServo.setPulseWidth(pos.getServoPos());
-        climberPID.activate(pos.getAngle()); 
-    }
-    
-    public void lockClimber(){
-        climberServo.setPulseWidth(2000);
-    }
-    
-    public void unlockClimber(){
-        climberServo.setPulseWidth(500);
+    public Command driveClimberToPosition(ClimberPosition pos) { 
+        return runOnce(() -> climberPID.activate(pos.getAngle())); 
     }
 
-
+    /** Locks/Unlocks the servo  */
+    public Command setServoLock(ClimberPosition pos){
+       return runOnce(() -> climberServo.setPulseWidth(pos.getServoPos()));
+    }
+    
+   
     @Override
     public void periodic(){
         SmartDashboard.putNumber("Climber Angle", climberPID.getMeasurement()); 
