@@ -39,8 +39,8 @@ public final class Constants {
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
 
-        public static final int SHOOTER_ENTRY_SENSOR_ID = 20;
-        public static final int SHOOTER_EXIT_SENSOR_ID = 21;
+        public static final int SHOOTER_ENTRY_SENSOR_ID = 21;
+        public static final int SHOOTER_EXIT_SENSOR_ID = 20;
         public static final int SHOOTER_LEFT_MOTOR_ID = 10;
         public static final int SHOOTER_RIGHT_MOTOR_ID = 11;
     }
@@ -52,11 +52,11 @@ public final class Constants {
 
         public enum ShooterPosition {
             /** Intake */
-            Intake1(1.5),
+            Intake1(2),
             /** Slow */
-            Slow(0.75),
+            Slow(1),
             /** Increment */
-            Inc(.5);
+            Inc(5);
 
             private double setpoint;
             ShooterPosition(double setpoint) {
@@ -161,9 +161,9 @@ public final class Constants {
         public enum ElevatorPosition {
             ZERO(0),
             TROUGH(6.5),
-            L2(13.8),
-            L3(29.4),
-            L4( 54);
+            L2(15.8),
+            L3(31.4),
+            L4( 55.4);
             
             private double setpoint;
             ElevatorPosition(double setpoint) {

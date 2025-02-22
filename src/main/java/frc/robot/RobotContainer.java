@@ -88,21 +88,25 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         driverController.leftBumper().onTrue(drivetrain.runOnce(() ->   drivetrain.seedFieldCentric()));
-        driverController.x().whileTrue(drivetrain.applyRequest(() -> brake));
+        driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driverController.rightTrigger().whileTrue(shooter.shoot(.5));
+        driverController.leftTrigger().whileTrue(shooter.shoot(-.5));
+        operatorController.y().onTrue(climber.climbToPosition(ClimberPosition.ZERO));
+        operatorController.x().onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
     }
     
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
-        operatorController.rightTrigger().whileTrue(shooter.shoot(.5));
-        operatorController.leftTrigger().whileTrue(shooter.shoot(-.5));
         
-        operatorController.leftBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L2));
-        operatorController.rightBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L3));
+        operatorController.y().whileTrue(elevator.elevateToPosition(ElevatorPosition.L2));
+        operatorController.x().whileTrue(elevator.elevateToPosition(ElevatorPosition.L3));
+        operatorController.rightBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
+        operatorController.a().whileTrue(elevator.elevateToPosition(ElevatorPosition.ZERO));
+        operatorController.b().whileTrue(elevator.elevateToPosition(ElevatorPosition.TROUGH));
         
         operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
-        operatorController.x().onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
-        operatorController.y().onTrue(climber.climbToPosition(ClimberPosition.ZERO));
-        operatorController.b().onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
+        operatorController.leftBumper().onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
+        
     }
 
     /** Use this to pass the autonomous command to the main {@link Robot} class. */
