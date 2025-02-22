@@ -11,12 +11,17 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
 
 /** A container that stores various procedures for the autonomous portion of the game */
 public class AutonContainer {
     private CTRESwerveDrivetrain drivetrain;
+    Elevator elevator;
+    Shooter shooter;
 
     /** Constructs an AutonContainer object */ 
     public AutonContainer(RobotContainer robot) {
@@ -46,12 +51,17 @@ public class AutonContainer {
 
     private void registerNamedCommands() {
         NamedCommands.registerCommand("Do Nothing", doNothing() );
+        NamedCommands.registerCommand("Elevator to L4", elevator.elevateToPosition(ElevatorPosition.L4));
+        NamedCommands.registerCommand("Shoot Piece", shooter.shoot(.5));
+        NamedCommands.registerCommand("Elevator to Zero", elevator.elevateToPosition(ElevatorPosition.ZERO));
     }
 
     public SendableChooser<Command> buildAutonChooser() {
         SendableChooser<Command> chooser = new SendableChooser<Command>();
         chooser.setDefaultOption("Do Nothing", doNothing());
         chooser.addOption("test", AutoBuilder.buildAuto("TestCircle"));
+        chooser.addOption("Leave Start", AutoBuilder.buildAuto("Leave Start"));
+        chooser.addOption("Middle One Piece", AutoBuilder.buildAuto("Middle One Piece (L4)"));
         return chooser;
     }
 
