@@ -91,13 +91,14 @@ public class RobotContainer {
         driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverController.rightTrigger().whileTrue(shooter.shoot(.5));
         driverController.leftTrigger().whileTrue(shooter.shoot(-.5));
-        operatorController.y().onTrue(climber.climbToPosition(ClimberPosition.ZERO));
-        operatorController.x().onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
+        
+        driverController.pov(270).onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
+        driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
+        driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
     }
     
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
-        
         operatorController.y().whileTrue(elevator.elevateToPosition(ElevatorPosition.L2));
         operatorController.x().whileTrue(elevator.elevateToPosition(ElevatorPosition.L3));
         operatorController.rightBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
@@ -105,8 +106,6 @@ public class RobotContainer {
         operatorController.b().whileTrue(elevator.elevateToPosition(ElevatorPosition.TROUGH));
         
         operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
-        operatorController.leftBumper().onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
-        
     }
 
     /** Use this to pass the autonomous command to the main {@link Robot} class. */
