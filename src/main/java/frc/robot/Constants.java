@@ -49,27 +49,13 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final double P_GAIN = .27;
+        public static final double VEL_LIMIT = 100;
+        public static final double ACCEL_LIMIT = 59;
 
-        public enum ShooterPosition {
-            /** Intake */
-            Intake1(2),
-            /** Slow */
-            Slow(1),
-            /** Increment */
-            Inc(5);
-
-            private double setpoint;
-            ShooterPosition(double setpoint) {
-                this.setpoint = setpoint;
-            };
-
-            /** @return The angle of the Shooter associated with the setpoint */
-            public double getcurrentpos() {
-                return setpoint;
-            }
-        }
+        /** Converts motor revolutions to inches of travel */
+        public static final double SHOOTER_RATIO = 2 * Math.PI;
+        public static final double SENSOR_SEPARATION = 8; // Inches
     }
-
 
     public static final class ClimberConstants {
         public static final double P_GAIN = .27;
@@ -100,6 +86,34 @@ public final class Constants {
             /** @return The position of the servo associated with the pulse width */
             public int getServoPos() {
                 return pulseWidth;
+            }
+        }
+    }
+
+    public static final class ElevatorConstants {
+        public static final double P_GAIN = .225;
+        public static final double D_GAIN = .005;
+        public static final double VEL_LIMIT = 100;
+        public static final double ACCEL_LIMIT = 59;
+        
+        /** Converts elevator motor revolutions to inches of shooter travel */
+        public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
+
+        public enum ElevatorPosition {
+            ZERO(0),
+            TROUGH(6.5),
+            L2(15.8),
+            L3(31.4),
+            L4( 55.4);
+            
+            private double setpoint;
+            ElevatorPosition(double setpoint) {
+                this.setpoint = setpoint;
+            };
+
+            /** @return  */
+            public double getHeight() {
+                return setpoint;
             }
         }
     }
@@ -146,34 +160,6 @@ public final class Constants {
 
               public int getStartingIndex() { return startingIndex; }
               public int getStripLength() { return stripLength; }
-        }
-    }
-
-    public static final class ElevatorConstants {
-        public static final double P_GAIN = .225;
-        public static final double D_GAIN = .005;
-        public static final double VEL_LIMIT = 100;
-        public static final double ACCEL_LIMIT = 59;
-        
-        /** Converts elevator motor revolutions to inches of shooter travel */
-        public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
-
-        public enum ElevatorPosition {
-            ZERO(0),
-            TROUGH(6.5),
-            L2(15.8),
-            L3(31.4),
-            L4( 55.4);
-            
-            private double setpoint;
-            ElevatorPosition(double setpoint) {
-                this.setpoint = setpoint;
-            };
-
-            /** @return  */
-            public double getHeight() {
-                return setpoint;
-            }
         }
     }
     
