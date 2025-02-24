@@ -90,7 +90,7 @@ public class RobotContainer {
         driverController.leftBumper().onTrue(drivetrain.runOnce(() ->   drivetrain.seedFieldCentric()));
         driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverController.rightTrigger().whileTrue(shooter.shoot(.5));
-        driverController.leftTrigger().whileTrue(shooter.shoot(-.5));
+        driverController.leftTrigger().whileTrue(shooter.shoot(-.15));
         
         driverController.pov(270).onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));

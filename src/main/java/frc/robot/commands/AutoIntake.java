@@ -1,40 +1,47 @@
 package frc.robot.commands;
 
-import static frc.robot.Constants.ShooterConstants.SENSOR_SEPARATION;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class AutoIntake extends Command {
     private Shooter shooter;
     private IntakeState state;
-    private double[] measurements;
-    private final double coralLength = 11.875;
+    private double fastSpeed = .3;
+    private double slowSpeed = .13;
 
     private boolean entry;
     private boolean exit;
-    private boolean lastEntry;
-    private boolean lastExit;
 
+    /** A list of the states the intake can be in */
     public enum IntakeState {
-        Waiting,
-        Localizing,
-        Indexing;
+        FAST,
+        SLOW,
+        DONE;
     }
-    
 
+
+    /** Constructs an AutoIntake Command
+     * This command attempts to index pieces as they come into the intake.
+     * It is meant to be run as a default command for the system, and cancelled
+     * by another command requiring the subsystem when pieces are shot.
+     * This is important because the cancellation should trigger a rerun of the
+     * initialize function.
+     * 
+     * @param shooter The intake/shooter system used to index pieces.
+     */
     public AutoIntake(Shooter shooter) {
         this.shooter = shooter;
         addRequirements(shooter);
     }
 
+
     @Override
     public void initialize() {
-        state = IntakeState.Waiting;
-        measurements = new double[3];
-        entry = false;
-        exit = false;
-        lastEntry = false;
-        lastExit = false;
+        if(shooter.isExitSensorBlocked())
+            state = IntakeState.DONE;
+        else
+            state = IntakeState.FAST;
+        
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -43,34 +50,31 @@ public class AutoIntake extends Command {
         entry = shooter.isEntrySensorBlocked();
         exit = shooter.isExitSensorBlocked();
 
-        transition();
+        if (state == IntakeState.FAST) {
+            if (entry) {
+                shooter.spin(slowSpeed);
+                state = IntakeState.SLOW;
+            }
+            else if (exit)
+                state = IntakeState.DONE;
+            else
+                shooter.spin(fastSpeed);
+        }
 
-        lastEntry = entry;
-        lastExit = exit;
-    }
+        else if (state == IntakeState.SLOW) {
+            if (!entry) {
+                shooter.stop();
+                state = IntakeState.DONE;
+            }
+            else
+                shooter.spin(slowSpeed);
+        }
 
-    private void transition() {
-        switch (state) {
-            case Waiting:
-                /* When a piece enters the intake, index it to desired position */
-                if (!entry && lastEntry)
-                    state = IntakeState.Indexing;
-                /* If there is already a piece in the intake, localize it */
-                else if (entry)
-                    state = IntakeState.Localizing;
-                break;
-
-            case Localizing:
-                /* When the state of either sensor changes, we've found the piece and can index it */
-                if (entry != lastEntry || exit != lastExit)
-                    state = IntakeState.Indexing;
-                break;
-
-            case Indexing: break; // Never leave the indexing state
-
-            // In the case of an invalid state, set to waiting
-            default:
-                state = IntakeState.Waiting;
+        else if (state == IntakeState.DONE) {
+            if (!entry && !exit)
+                state = IntakeState.FAST;
+            else
+                shooter.stop();
         }
     }
 }
