@@ -181,6 +181,11 @@ public final class Constants {
     /* -------------- DRIVETRAIN CONSTANTS -------------- */
 
     public static final class DriveConstants {
+        /** Translation instructions closer to 0 than the deadband will be set to 0 */
+        public static final double TRANSLATION_DEADBAND = .05;
+        /** Rotation instructions closer to 0 than the deadband will be set to 0 */
+        public static final double ROTATION_DEADBAND = .05;
+
         /** Higher values make the robot drive more aggressively */
         public static final double TRANSLATION_SLEW = 4;
         /** Higher values make the robot spin more aggressively */
@@ -190,11 +195,6 @@ public final class Constants {
         public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
         /** The maximum allowed spinning speed of the robot */
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-        
-        /** Translation instructions closer to 0 than the deadband will be set to 0 */
-        public static final double TRANSLATION_DEADBAND = .07 * MAX_TRANSLATION_SPEED;
-        /** Rotation instructions closer to 0 than the deadband will be set to 0 */
-        public static final double ROTATION_DEADBAND = .1 * MAX_ROTATION_SPEED;
     }
 
     public static final class PathPlannerConfigs {

@@ -2,12 +2,8 @@ package frc.robot;
 
 import static frc.robot.Constants.ControllerPorts.DRIVER_PORT;
 import static frc.robot.Constants.ControllerPorts.OPERATOR_PORT;
-import static frc.robot.Constants.DriveConstants.MAX_ROTATION_SPEED;
 import static frc.robot.Constants.DriveConstants.MAX_TRANSLATION_SPEED;
-import static frc.robot.Constants.DriveConstants.ROTATION_DEADBAND;
-import static frc.robot.Constants.DriveConstants.TRANSLATION_DEADBAND;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,6 +15,7 @@ import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
+import frc.robot.commands.DriveCommand;
 import frc.robot.commands.LEDControl;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Candle;
@@ -29,12 +26,6 @@ import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
-    // CTRE drivetrain control functions
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(TRANSLATION_DEADBAND).withRotationalDeadband(ROTATION_DEADBAND)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-
     // Controllers
     private final CommandXboxController driverController = new CommandXboxController(DRIVER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_PORT);
@@ -79,18 +70,26 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverController.getLeftY() * MAX_TRANSLATION_SPEED) 
-                    .withVelocityY(-driverController.getLeftX() * MAX_TRANSLATION_SPEED)
-                    .withRotationalRate(-driverController.getRightX() * MAX_ROTATION_SPEED) 
+            new DriveCommand(drivetrain, 
+                () -> driverController.getLeftX(),
+                () -> driverController.getLeftY(),
+                () -> driverController.getRightX(),
+                /* Left Bumper is used as the slow driving button.
+                 * While held, the speed of the robot is multiplied by .8 */
+                () -> driverController.leftBumper().getAsBoolean() ? .8 : 1,
+                /* Left Trigger is used as the robot centric button.
+                 * While held, the robot will drive in robot centric mode. */
+                () -> driverController.leftTrigger().getAsBoolean()
             )
         );
 
-        // reset the field-centric heading on left bumper press
-        driverController.leftBumper().onTrue(drivetrain.runOnce(() ->   drivetrain.seedFieldCentric()));
-        driverController.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // Reset the field-centric heading on A press
+        driverController.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // Put the robot in brake mode while X is held
+        driverController.x().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
+
         driverController.rightTrigger().whileTrue(shooter.shoot(.5));
-        driverController.leftTrigger().whileTrue(shooter.shoot(-.5));
+        driverController.rightBumper().whileTrue(shooter.shoot(-.2));
         
         driverController.pov(270).onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
