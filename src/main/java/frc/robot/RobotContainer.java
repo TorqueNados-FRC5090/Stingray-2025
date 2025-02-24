@@ -75,8 +75,10 @@ public class RobotContainer {
                 () -> driverController.getLeftY(),
                 () -> driverController.getRightX(),
                 /* Left Bumper is used as the slow driving button.
-                 * While held, the speed of the robot is multiplied by .8 */
-                () -> driverController.leftBumper().getAsBoolean() ? .8 : 1,
+                 * While held, the speed of the robot is multiplied by .8 
+                 * The speed is also reduced if the elevator is raised by more than 20 inches. */
+                () -> driverController.leftBumper().getAsBoolean()
+                   || elevator.getHeight() > 20 ? .8 : 1,
                 /* Left Trigger is used as the robot centric button.
                  * While held, the robot will drive in robot centric mode. */
                 () -> driverController.leftTrigger().getAsBoolean()

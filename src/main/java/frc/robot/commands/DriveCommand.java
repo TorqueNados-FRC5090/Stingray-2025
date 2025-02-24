@@ -21,7 +21,7 @@ public class DriveCommand extends Command {
     private DoubleSupplier inputY;
     private DoubleSupplier inputR;
     private DoubleSupplier inputScalar;
-    private BooleanSupplier fieldCentric;
+    private BooleanSupplier robotCentric;
 
     private final SlewRateLimiter slewX = new SlewRateLimiter(TRANSLATION_SLEW);
     private final SlewRateLimiter slewY = new SlewRateLimiter(TRANSLATION_SLEW);
@@ -41,13 +41,14 @@ public class DriveCommand extends Command {
         DoubleSupplier inputY, 
         DoubleSupplier inputR, 
         DoubleSupplier inputScalar, 
-        BooleanSupplier fieldCentric
+        BooleanSupplier robotCentric
     ) {
         this.drivetrain = drivetrain;
         this.inputX = inputX;
         this.inputY = inputY;
         this.inputR = inputR;
         this.inputScalar = inputScalar;
+        this.robotCentric = robotCentric;
 
         addRequirements(drivetrain);
     }
@@ -59,7 +60,7 @@ public class DriveCommand extends Command {
         double y = inputY.getAsDouble();
         double r = inputR.getAsDouble();
         double scalar = inputScalar.getAsDouble();
-        boolean isFieldCentric = fieldCentric.getAsBoolean();
+        boolean isRobotCentric = robotCentric.getAsBoolean();
 
         /* First we'll apply a deadband to the inputs to prevent excessively small
          * inputs from being sent to the drivetrain. This can prevent accidental control, 
@@ -104,8 +105,8 @@ public class DriveCommand extends Command {
          * Drivetrain y = Output -x
          * Drivetrain r = Output -r
          */
-        if (isFieldCentric) { // Send the request in field centric mode
-            SwerveRequest.FieldCentric outputRequest = new SwerveRequest.FieldCentric();
+        if (isRobotCentric) { // Send the request in field centric mode
+            SwerveRequest.RobotCentric outputRequest = new SwerveRequest.RobotCentric();
             outputRequest
                 .withVelocityX(-y)
                 .withVelocityY(-x)
@@ -115,7 +116,7 @@ public class DriveCommand extends Command {
             drivetrain.setControl(outputRequest);
         }
         else { // Send the request in robot centric mode
-            SwerveRequest.RobotCentric outputRequest = new SwerveRequest.RobotCentric();
+            SwerveRequest.FieldCentric outputRequest = new SwerveRequest.FieldCentric();
             outputRequest
                 .withVelocityX(-y)
                 .withVelocityY(-x)

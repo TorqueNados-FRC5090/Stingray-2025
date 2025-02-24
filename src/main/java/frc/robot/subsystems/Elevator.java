@@ -53,7 +53,7 @@ public class Elevator extends SubsystemBase {
     }
 
     // Getters
-    public double getPosition() { return leadMotor.getEncoder().getPosition(); }
+    public double getHeight() { return leadMotor.getEncoder().getPosition(); }
     public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
     public ElevatorPosition getLatestPosition() { return lastPosition; }
 
@@ -67,7 +67,7 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Elevator Height", getPosition());
+        SmartDashboard.putNumber("Elevator Height", getHeight());
         SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
     }
 }
