@@ -28,46 +28,132 @@ public final class Constants {
         public static final int OPERATOR_PORT = 1;
     }
 
+    public static final class SubsystemIDs {
+        public static final int SERVO_HUB_CAN_ID = 3;
+        public static final int INTAKE_SERVO_PORT = 3;
+        public static final int CANDLE_ID = 13;
+
+        public static final int CLIMBER_MOTOR_ID = 12;
+        public static final int CLIMBER_SERVO_PORT = 2;
+
+        public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
+        public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
+
+        public static final int SHOOTER_ENTRY_SENSOR_ID = 21;
+        public static final int SHOOTER_EXIT_SENSOR_ID = 20;
+        public static final int SHOOTER_LEFT_MOTOR_ID = 10;
+        public static final int SHOOTER_RIGHT_MOTOR_ID = 11;
+    }
+
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ShooterConstants {
-        public static final int ENTRY_SENSOR_ID = 20;
-        public static final int EXIT_SENSOR_ID = 21;
-        public static final int LEFT_MOTOR_ID = 10;
-        public static final int RIGHT_MOTOR_ID = 11;
+        public static final double P_GAIN = .27;
+
+        public enum ShooterPosition {
+            /** Intake */
+            Intake1(2),
+            /** Slow */
+            Slow(1),
+            /** Increment */
+            Inc(5);
+
+            private double setpoint;
+            ShooterPosition(double setpoint) {
+                this.setpoint = setpoint;
+            };
+
+            /** @return The angle of the Shooter associated with the setpoint */
+            public double getcurrentpos() {
+                return setpoint;
+            }
+        }
     }
-    
+
+
     public static final class ClimberConstants {
-        public static final int MOTOR_ID = 11;
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
-        public static final double CLIMBER_RATIO = 1;
+        public static final double CLIMBER_RATIO = 2.4;
 
         public enum ClimberPosition {
             /** Vertical */
-            ZERO(0),
+            ZERO(0,2000),
             /** Out of robot, used to line up with cage */
-            PREPARE(90),
+            PREPARE(80, 2000),
             /** Inside robot, used when engaged with cage */
-            CLIMB(-90);
+            CLIMB(-80, 500);
 
+            private int pulseWidth;
             private double setpoint;
-            ClimberPosition(double setpoint) {
+            ClimberPosition(double setpoint, int pulseWidth) {
                 this.setpoint = setpoint;
+                this.pulseWidth = pulseWidth;
             };
 
             /** @return The angle of the climber associated with the setpoint */
             public double getAngle() {
                 return setpoint;
             }
+
+            /** @return The position of the servo associated with the pulse width */
+            public int getServoPos() {
+                return pulseWidth;
+            }
+        }
+    }
+
+    public static final class LEDConstants {
+        public static enum LEDColor {
+            RED(255, 0, 0),
+            GREEN(25, 255, 0),
+            BLUE(0, 10, 181),
+            YELLOW(255, 100, 0),
+            PURPLE(162, 18, 184),
+            PINK(255, 166, 238),
+            LIGHT_BLUE(125, 212, 255),
+            ORANGE(180, 20, 0),
+            WHITE(255, 255, 255);
+
+            private int red;
+            private int green;
+            private int blue;
+             
+            LEDColor(int red, int green, int blue) {
+                this.red = red;
+                this.green = green;
+                this.blue = blue;
+            }
+
+            public int getRed() { return red; }
+            public int getGreen() { return green; }
+            public int getBlue() { return blue; }
+        }
+
+        public static enum LEDStrip {
+              CANDLE(0, 8),
+              SHOOTER(8, 60),
+              INTAKE(68, 31);
+
+              private int startingIndex;
+              private int stripLength;
+
+              LEDStrip(int startingIndex, int stripLength){
+                  this.startingIndex = startingIndex;
+                  this.stripLength = stripLength;
+              }
+
+              public int getStartingIndex() { return startingIndex; }
+              public int getStripLength() { return stripLength; }
         }
     }
 
     public static final class ElevatorConstants {
-        public static final int LEFT_MOTOR_ID = 15;
-        public static final int RIGHT_MOTOR_ID = 16;
-        public static final double P_GAIN = .25;
+        public static final double P_GAIN = .225;
+        public static final double D_GAIN = .005;
+        public static final double VEL_LIMIT = 100;
+        public static final double ACCEL_LIMIT = 59;
         
         /** Converts elevator motor revolutions to inches of shooter travel */
         public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
@@ -75,9 +161,9 @@ public final class Constants {
         public enum ElevatorPosition {
             ZERO(0),
             TROUGH(6.5),
-            L2(13.8),
-            L3(29.4),
-            L4( 54);
+            L2(15.8),
+            L3(31.4),
+            L4( 55.4);
             
             private double setpoint;
             ElevatorPosition(double setpoint) {
