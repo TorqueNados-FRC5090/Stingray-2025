@@ -12,15 +12,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Shooter;
 
 /** A container that stores various procedures for the autonomous portion of the game */
 public class AutonContainer {
     private CTRESwerveDrivetrain drivetrain;
+    private Shooter shooter;
+    private Elevator elevator;
 
     /** Constructs an AutonContainer object */ 
     public AutonContainer(RobotContainer robot) {
         this.drivetrain = robot.drivetrain;
+        this.shooter = robot.shooter;
+        this.elevator = robot.elevator;
         registerNamedCommands();
 
         // Attempt to load the pathplanner config from GUI
@@ -45,13 +52,16 @@ public class AutonContainer {
     }
 
     private void registerNamedCommands() {
-        NamedCommands.registerCommand("Do Nothing", doNothing() );
+        NamedCommands.registerCommand("ElevatorToL4", new SetElevatorTarget(elevator, ElevatorPosition.L4));
+        NamedCommands.registerCommand("ElevatorToZero", new SetElevatorTarget(elevator, ElevatorPosition.L4));
+        NamedCommands.registerCommand("Shoot", shooter.shoot(.5).withTimeout(.5) );
     }
 
     public SendableChooser<Command> buildAutonChooser() {
         SendableChooser<Command> chooser = new SendableChooser<Command>();
         chooser.setDefaultOption("Do Nothing", doNothing());
-        chooser.addOption("test", AutoBuilder.buildAuto("TestCircle"));
+        chooser.addOption("Right Single", AutoBuilder.buildAuto("Right Single"));
+        chooser.addOption("Right Double", AutoBuilder.buildAuto("Right Double"));
         return chooser;
     }
 
