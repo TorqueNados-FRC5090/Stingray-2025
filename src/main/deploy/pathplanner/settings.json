@@ -4,11 +4,13 @@
   "holonomicMode": true,
   "pathFolders": [
     "Left Paths",
+    "Center Paths",
     "Right Paths",
     "Tests"
   ],
   "autoFolders": [
     "Left Autos",
+    "Center Autos",
     "Right Autos",
     "Tests"
   ],

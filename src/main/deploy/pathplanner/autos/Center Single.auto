@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start R to E4"
+            "pathName": "Center to H4"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "ElevatorToL4"
           }
         },
         {
@@ -27,17 +27,11 @@
           "data": {
             "name": "ElevatorToZero"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "E4 to Park R"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Right Autos",
+  "folder": "Center Autos",
   "choreoAuto": false
 }

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS to J4"
+            "pathName": "Start L to J4"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "J4 to LP"
+            "pathName": "J4 to Pickup L"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LP to K4"
+            "pathName": "Pickup L to K4"
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "K4 to LE"
+            "pathName": "K4 to Pickup L"
           }
         }
       ]
