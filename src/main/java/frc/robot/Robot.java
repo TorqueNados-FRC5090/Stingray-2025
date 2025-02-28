@@ -1,24 +1,16 @@
 package frc.robot;
 
-// Camera imports
 import edu.wpi.first.cameraserver.CameraServer;
-
-// Command imports
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-// Misc imports
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 
 public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
-
-    // Commands
     private Command autonCommand;
 
-    // This function is run when the robot is first started up and should be used
-    // for any initialization code.
     @Override
     public void robotInit() {
         // Start the camera feed
@@ -26,9 +18,23 @@ public class Robot extends TimedRobot {
 
         // Construct the robot container
         robotContainer = new RobotContainer();
+
+        // Cancel any commands that may have persisted through power off or redeploy
+        CommandScheduler.getInstance().cancelAll();
     }
 
-    // This function is called once at the start of auton
+    @Override
+    public void robotPeriodic() {    
+        // Always run the command scheduler to allow it to function
+        CommandScheduler.getInstance().run();
+    }
+
+    @Override
+    public void disabledExit() {
+        // Reset the elevator's setpoint to zero on enable
+        robotContainer.elevator.setTargetPosition(ElevatorPosition.ZERO);
+    }
+
     @Override
     public void autonomousInit() {
         // Get the command to be used in auton
@@ -37,12 +43,7 @@ public class Robot extends TimedRobot {
         if (autonCommand != null)
             autonCommand.schedule();
     }
-
-    // This function is called every 20ms during auton
-    @Override
-    public void autonomousPeriodic() {}
     
-    // This function is called once at the start of teleop
     @Override
     public void teleopInit() {
         // This makes sure that the autonomous command stops when teleop starts
@@ -50,23 +51,9 @@ public class Robot extends TimedRobot {
             autonCommand.cancel();
     }
 
-    // This function is called every 20ms during teleop
-    @Override
-    public void teleopPeriodic() {}
-
-    // This function is called every 20ms while the robot is enabled
-    @Override
-    public void robotPeriodic() {    
-        // Run any functions that always need to be running
-        CommandScheduler.getInstance().run();
-    }
-
     @Override
     public void testInit() {
       // Kill any active commands when entering test mode
       CommandScheduler.getInstance().cancelAll();
     }
-
-    @Override
-    public void testPeriodic() {}
 }

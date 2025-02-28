@@ -11,19 +11,17 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 
 public class Elevator extends SubsystemBase {
      // Declare variables
     public SparkMax leadMotor;
     public SparkMax followerMotor; 
     public ProfiledPIDController elevatorPID;
-    public ElevatorPosition lastPosition = ElevatorPosition.ZERO;
+    public ElevatorPosition targetPosition = ElevatorPosition.ZERO;
     
 
     // Constructor 
@@ -46,28 +44,31 @@ public class Elevator extends SubsystemBase {
         followerMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
     }
 
-    
-    /** @return A command that tells the elevator to go to a position */
-    public Command elevateToPosition(ElevatorPosition pos) {
-        return run(() -> driveElevatorToPosition(pos));
-    }
 
     // Getters
     public double getHeight() { return leadMotor.getEncoder().getPosition(); }
     public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
-    public ElevatorPosition getLatestPosition() { return lastPosition; }
+    public ElevatorPosition getTargetPosition() { return targetPosition; }
+
+    public void setTargetPosition(ElevatorPosition pos) { targetPosition = pos; }
 
     /** Sends voltage to the elevator to drive it to a position */
-    private void driveElevatorToPosition(ElevatorPosition pos) {
-        lastPosition = pos;
-        double pidout = elevatorPID.calculate(leadMotor.getEncoder().getPosition(), pos.getHeight());
+    private void driveElevator() {
+        double pidout = elevatorPID.calculate(this.getHeight(), targetPosition.getHeight());
         leadMotor.setVoltage(pidout * RobotController.getBatteryVoltage());
     }
     
 
     @Override
     public void periodic(){
+<<<<<<< HEAD
         SmartDashboard.putNumber("Elevator Height", getHeight());
+=======
+        driveElevator();
+
+        SmartDashboard.putNumber("Elevator Height", getHeight());
+        SmartDashboard.putString("Elevator Target Position", getTargetPosition().toString());
+>>>>>>> e0b442049bdcad4d294a02a2e6b99ae2f9bebe1f
         SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
     }
 }
