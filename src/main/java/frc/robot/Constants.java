@@ -65,7 +65,7 @@ public final class Constants {
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
-        public static final double CLIMBER_RATIO = 2.4;
+        public static final double CLIMBER_RATIO = 360.0/324.0;
 
         public enum ClimberPosition {
             /** Vertical */
@@ -73,7 +73,7 @@ public final class Constants {
             /** Out of robot, used to line up with cage */
             PREPARE(80, 2000),
             /** Inside robot, used when engaged with cage */
-            CLIMB(-80, 500);
+            CLIMB(-110, 500);
 
             private int pulseWidth;
             private double setpoint;

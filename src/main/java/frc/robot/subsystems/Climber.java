@@ -28,15 +28,16 @@ public class Climber extends SubsystemBase {
     
     // Constructor
     public Climber() {
-       climbMotor = new SparkMax(CLIMBER_MOTOR_ID, MotorType.kBrushless);
-       climberPID = new GenericPID(climbMotor, ControlType.kPosition, P_GAIN);
+        climbMotor = new SparkMax(CLIMBER_MOTOR_ID, MotorType.kBrushless);
+        climberPID = new GenericPID(climbMotor, ControlType.kPosition, P_GAIN);
 
-       SparkMaxConfig config = new SparkMaxConfig();
-       config.idleMode(IdleMode.kCoast);
-       config.encoder.positionConversionFactor(CLIMBER_RATIO);
-       climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kBrake)
+            .inverted(true);
+        config.encoder.positionConversionFactor(CLIMBER_RATIO);
+        climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-       climberServo = ServoManager.getInstance().getServoInPort(CLIMBER_SERVO_PORT);
+        climberServo = ServoManager.getInstance().getServoInPort(CLIMBER_SERVO_PORT);
     }
 
     /** Puts servo in position, then moves the climber  */
