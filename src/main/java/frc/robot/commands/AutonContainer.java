@@ -62,6 +62,8 @@ public class AutonContainer {
         chooser.setDefaultOption("Do Nothing", doNothing());
         chooser.addOption("Right Single", AutoBuilder.buildAuto("Right Single"));
         chooser.addOption("Right Double", AutoBuilder.buildAuto("Right Double"));
+        chooser.addOption("Left Single", AutoBuilder.buildAuto("Left Single"));
+        chooser.addOption("Left Double", AutoBuilder.buildAuto("Left Double"));
         return chooser;
     }
 
