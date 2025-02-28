@@ -1,52 +1,80 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterConstants.ShooterPosition;
 import frc.robot.subsystems.Shooter;
 
-public class AutoIntake extends Command{
-    Shooter shooter;
-    double counter = 1;
-  
-    public AutoIntake(Shooter shooter){
-       this.shooter = shooter;
-       addRequirements(shooter);
+public class AutoIntake extends Command {
+    private Shooter shooter;
+    private IntakeState state;
+    private double fastSpeed = .3;
+    private double slowSpeed = .13;
+
+    private boolean entry;
+    private boolean exit;
+
+    /** A list of the states the intake can be in */
+    public enum IntakeState {
+        FAST,
+        SLOW,
+        DONE;
     }
 
+
+    /** Constructs an AutoIntake Command
+     * This command attempts to index pieces as they come into the intake.
+     * It is meant to be run as a default command for the system, and cancelled
+     * by another command requiring the subsystem when pieces are shot.
+     * This is important because the cancellation should trigger a rerun of the
+     * initialize function.
+     * 
+     * @param shooter The intake/shooter system used to index pieces.
+     */
+    public AutoIntake(Shooter shooter) {
+        this.shooter = shooter;
+        addRequirements(shooter);
+    }
+
+
     @Override
-    public void initialize() {}
+    public void initialize() {
+        if(shooter.isExitSensorBlocked())
+            state = IntakeState.DONE;
+        else
+            state = IntakeState.FAST;
+        
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (shooter.isEntrySensorBlocked() && counter == 1){
-            //shooter.shoot(.25);
-            shooter.driveShooterToPosition(ShooterPosition.Intake1.getcurrentpos()+shooter.getshooterposition());
-            counter = counter + 1;
-        }
-        else if (shooter.isEntrySensorBlocked() && counter == 2){
-            shooter.driveShooterToPosition(ShooterPosition.Slow.getcurrentpos()+shooter.getshooterposition());
-            if (shooter.isExitSensorBlocked()){
-                counter = 3;
+        entry = shooter.isEntrySensorBlocked();
+        exit = shooter.isExitSensorBlocked();
+
+        if (state == IntakeState.FAST) {
+            if (entry) {
+                shooter.spin(slowSpeed);
+                state = IntakeState.SLOW;
             }
-
+            else if (exit)
+                state = IntakeState.DONE;
+            else
+                shooter.spin(fastSpeed);
         }
-        else if (shooter.isExitSensorBlocked()){
-            shooter.spin(0);
-        }
-        else {
-            shooter.spin(.15);
-            counter = 1;
-        }
-    }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {}
+        else if (state == IntakeState.SLOW) {
+            if (!entry) {
+                shooter.stop();
+                state = IntakeState.DONE;
+            }
+            else
+                shooter.spin(slowSpeed);
+        }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false; // Has no end condition
+        else if (state == IntakeState.DONE) {
+            if (!entry && !exit)
+                state = IntakeState.FAST;
+            else
+                shooter.stop();
+        }
     }
 }
