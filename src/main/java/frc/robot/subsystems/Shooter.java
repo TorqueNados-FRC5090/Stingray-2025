@@ -10,7 +10,6 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -19,13 +18,10 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.wrappers.GenericPID;
 
 public class Shooter extends SubsystemBase {
     SparkFlex leadMotor;
     SparkFlex followMotor;
-    GenericPID shooterPID;
-    boolean active = false;
 
     Canandcolor entrySensor;
     Canandcolor exitSensor;  
@@ -33,7 +29,6 @@ public class Shooter extends SubsystemBase {
     public Shooter(){
         leadMotor = new SparkFlex(SHOOTER_LEFT_MOTOR_ID, MotorType.kBrushless);
         followMotor = new SparkFlex(SHOOTER_RIGHT_MOTOR_ID, MotorType.kBrushless);
-        shooterPID = new GenericPID(leadMotor, ControlType.kPosition, .1);
         
         // Configure the motors
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
@@ -65,26 +60,11 @@ public class Shooter extends SubsystemBase {
     }
 
 
-    public void indexPiece() {
-        if(!active) {
-            shooterPID.activate(IDEAL_CORAL_POSITION);
-            active = true;
-        }
-    }
-
     public void spin(double speed) { 
         leadMotor.set(speed); 
-        if(active) {
-            shooterPID.pause(); 
-            active = false;
-        }
     }
     public void stop() { 
         leadMotor.stopMotor(); 
-        if(active) {
-            shooterPID.pause();
-            active = false;
-        }
     }
 
     public void setEncoder(double position) { leadMotor.getEncoder().setPosition(position); }

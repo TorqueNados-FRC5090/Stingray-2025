@@ -1,22 +1,27 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
 public class AutoIntake extends Command {
     private Shooter shooter;
     private IntakeState state;
-    private double fastSpeed = .3;
-    private double slowSpeed = .13;
 
     private boolean entry;
     private boolean exit;
 
     /** A list of the states the intake can be in */
     public enum IntakeState {
-        FAST,
-        SLOW,
-        DONE;
+        /** Sets the intake to a fast speed, ideal for getting a good hold on a piece */
+        WAITING(.3),
+        /** Sets the intake to a slow speed, ideal for indexing a piece */
+        INDEXING(.13),
+        /** Stops the intake, as to not overshoot the piece */
+        HOLDING(0);
+
+        public double speed;
+        private IntakeState(double speed) { this.speed = speed; }
     }
 
 
@@ -37,44 +42,57 @@ public class AutoIntake extends Command {
 
     @Override
     public void initialize() {
-        if(shooter.isExitSensorBlocked())
-            state = IntakeState.DONE;
-        else
-            state = IntakeState.FAST;
+        pollSensors();
+        
+        if(exit &&  !entry) { // Hold if we already have a piece loaded correctly
+            enterState(IntakeState.HOLDING);
+        }
+        else { // If we have no piece, or it is loaded incorrectly, go to the waiting state
+            enterState(IntakeState.WAITING);
+        }
         
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        pollSensors();
+        runStateMachine();
+
+        SmartDashboard.putString("Intake State", state.toString());
+    }
+
+    private void pollSensors() {
         entry = shooter.isEntrySensorBlocked();
         exit = shooter.isExitSensorBlocked();
+    }
 
-        if (state == IntakeState.FAST) {
-            if (entry) {
-                shooter.spin(slowSpeed);
-                state = IntakeState.SLOW;
-            }
-            else if (exit)
-                state = IntakeState.DONE;
-            else
-                shooter.spin(fastSpeed);
-        }
+    /** Runs the state machine by evaluating whether we should leave
+     *  our current state, and which state we should transition to.
+     */
+    private void runStateMachine() {
+        switch (state) {
+            case WAITING:
+                if(entry) { enterState(IntakeState.INDEXING); }
+                if(exit) { enterState(IntakeState.HOLDING); }
+                break;
 
-        else if (state == IntakeState.SLOW) {
-            if (!entry) {
-                shooter.stop();
-                state = IntakeState.DONE;
-            }
-            else
-                shooter.spin(slowSpeed);
-        }
+            case INDEXING: // Once the piece is beyond the sensor, just hold it still
+                if(!entry) { enterState(IntakeState.HOLDING); }
+                break;
 
-        else if (state == IntakeState.DONE) {
-            if (!entry && !exit)
-                state = IntakeState.FAST;
-            else
-                shooter.stop();
+            case HOLDING: // If there is not a piece in the intake, go back to waiting
+                if(!entry && !exit) { enterState(IntakeState.WAITING); }
+                break;
+        
+            // If in an invalid state, transition to done
+            default: enterState(IntakeState.HOLDING);
         }
     }
+
+    private void enterState(IntakeState destination) {
+        shooter.spin(destination.speed);
+        state = destination;
+    }
+
 }
