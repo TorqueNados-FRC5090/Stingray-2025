@@ -61,14 +61,10 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic(){
-<<<<<<< HEAD
-        SmartDashboard.putNumber("Elevator Height", getHeight());
-=======
         driveElevator();
 
         SmartDashboard.putNumber("Elevator Height", getHeight());
         SmartDashboard.putString("Elevator Target Position", getTargetPosition().toString());
->>>>>>> e0b442049bdcad4d294a02a2e6b99ae2f9bebe1f
         SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
     }
 }
