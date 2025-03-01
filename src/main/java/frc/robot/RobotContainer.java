@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.AlgaeConstants.AlgaePosition;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.commands.AutoIntake;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.AlgaeRemover;
 
 public class RobotContainer {
     // Controllers
@@ -39,6 +41,7 @@ public class RobotContainer {
     private final Climber climber = new Climber();
     public final Elevator elevator = new Elevator();
     public final Candle candleLEDS = new Candle();
+    public final AlgaeRemover algaeRemover = new AlgaeRemover();
 
     // Misc objects
     private final AutonContainer auton = new AutonContainer(this);
@@ -101,16 +104,20 @@ public class RobotContainer {
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
         // When a button is pressed, start going to its position, return to zero when button is released
-        operatorController.b().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.TROUGH))
+        operatorController.a().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.TROUGH))
             .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));                
-        operatorController.y().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L2))
+        operatorController.b().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L2))
             .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
         operatorController.x().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L3))
             .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
-        operatorController.rightBumper().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L4))
+        operatorController.y().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L4))
             .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
         
         operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
+        operatorController.rightBumper().whileTrue(
+            algaeRemover.AlgaeRemoveArmOUt(AlgaePosition.OUT)
+            .alongWith(shooter.shoot(-.3))
+        );
     }
 
     /** Use this to pass the autonomous command to the main {@link Robot} class. */
