@@ -17,6 +17,7 @@ import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.LEDControl;
+import frc.robot.commands.SetElevatorTarget;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Climber;
@@ -61,7 +62,6 @@ public class RobotContainer {
 
     private void setDefaultActions() {
         shooter.setDefaultCommand(new AutoIntake(shooter));
-        elevator.setDefaultCommand(elevator.elevateToPosition(ElevatorPosition.ZERO));
         candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
     }
 
@@ -78,7 +78,7 @@ public class RobotContainer {
                  * While held, the speed of the robot is multiplied by .8 
                  * The speed is also reduced if the elevator is raised by more than 20 inches. */
                 () -> driverController.leftBumper().getAsBoolean()
-                   || elevator.getHeight() > 20 ? .8 : 1,
+                   || elevator.getHeight() > 20 ? .7 : 1,
                 /* Left Trigger is used as the robot centric button.
                  * While held, the robot will drive in robot centric mode. */
                 () -> driverController.leftTrigger().getAsBoolean()
@@ -100,11 +100,15 @@ public class RobotContainer {
     
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
-        operatorController.y().whileTrue(elevator.elevateToPosition(ElevatorPosition.L2));
-        operatorController.x().whileTrue(elevator.elevateToPosition(ElevatorPosition.L3));
-        operatorController.rightBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
-        operatorController.a().whileTrue(elevator.elevateToPosition(ElevatorPosition.ZERO));
-        operatorController.b().whileTrue(elevator.elevateToPosition(ElevatorPosition.TROUGH));
+        // When a button is pressed, start going to its position, return to zero when button is released
+        operatorController.b().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.TROUGH))
+            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));                
+        operatorController.y().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L2))
+            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
+        operatorController.x().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L3))
+            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
+        operatorController.rightBumper().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L4))
+            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
         
         operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
     }
