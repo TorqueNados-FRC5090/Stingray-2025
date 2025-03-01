@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.AlgaeConstants.AlgaePosition;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.commands.AutoIntake;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.AlgaeRemover;
 
 public class RobotContainer {
     // CTRE drivetrain control functions
@@ -47,6 +49,7 @@ public class RobotContainer {
     private final Climber climber = new Climber();
     public final Elevator elevator = new Elevator();
     public final Candle candleLEDS = new Candle();
+    public final AlgaeRemover algaeRemover = new AlgaeRemover();
 
     // Misc objects
     private final AutonContainer auton = new AutonContainer(this);
@@ -99,11 +102,14 @@ public class RobotContainer {
     
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
-        operatorController.y().whileTrue(elevator.elevateToPosition(ElevatorPosition.L2));
+        operatorController.b().whileTrue(elevator.elevateToPosition(ElevatorPosition.L2));
         operatorController.x().whileTrue(elevator.elevateToPosition(ElevatorPosition.L3));
-        operatorController.rightBumper().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
-        operatorController.a().whileTrue(elevator.elevateToPosition(ElevatorPosition.ZERO));
-        operatorController.b().whileTrue(elevator.elevateToPosition(ElevatorPosition.TROUGH));
+        operatorController.y().whileTrue(elevator.elevateToPosition(ElevatorPosition.L4));
+        operatorController.a().whileTrue(elevator.elevateToPosition(ElevatorPosition.TROUGH));
+        operatorController.rightBumper().whileTrue(
+            algaeRemover.AlgaeRemoveArmOUt(AlgaePosition.OUT)
+            .alongWith(shooter.shoot(-.3))
+        );
         
         operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
     }

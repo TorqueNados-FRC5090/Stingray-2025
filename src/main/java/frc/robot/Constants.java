@@ -39,6 +39,9 @@ public final class Constants {
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
 
+        public static final int ALGAE_LEFT_MOTOR_ID = 17;
+        public static final int ALGAE_RIGHT_MOTOR_ID = 18;
+
         public static final int SHOOTER_ENTRY_SENSOR_ID = 21;
         public static final int SHOOTER_EXIT_SENSOR_ID = 20;
         public static final int SHOOTER_LEFT_MOTOR_ID = 10;
@@ -65,6 +68,26 @@ public final class Constants {
 
             /** @return The angle of the Shooter associated with the setpoint */
             public double getcurrentpos() {
+                return setpoint;
+            }
+        }
+    }
+
+    public static final class AlgaeConstants {
+        public static final double P_GAIN = .005;
+
+        public static final double ALGAE_RATIO = 360.0/25.0;
+
+        public enum AlgaePosition {
+            ZERO(0),
+            OUT(55);
+
+            private double setpoint;
+            AlgaePosition(double setpoint) {
+                this.setpoint = setpoint;
+            };
+
+            public double getAngle() {
                 return setpoint;
             }
         }
