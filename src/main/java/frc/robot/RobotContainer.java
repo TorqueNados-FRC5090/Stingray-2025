@@ -36,9 +36,9 @@ public class RobotContainer {
     public final LimeLight frontLimelight = new LimeLight("limelight-ultron");
     public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(frontLimelight);
 
-    private final Funnel funnel = new Funnel();
+    public final Funnel funnel = new Funnel();
     public final Shooter shooter = new Shooter();
-    private final Climber climber = new Climber();
+    public final Climber climber = new Climber();
     public final Elevator elevator = new Elevator();
     public final Candle candleLEDS = new Candle();
     public final AlgaeRemover algaeRemover = new AlgaeRemover();
@@ -80,23 +80,21 @@ public class RobotContainer {
                 /* Left Bumper is used as the slow driving button.
                  * While held, the speed of the robot is multiplied by .8 
                  * The speed is also reduced if the elevator is raised by more than 20 inches. */
-                () -> driverController.leftBumper().getAsBoolean()
-                   || elevator.getHeight() > 20 ? .7 : 1,
+                () -> driverController.leftTrigger().getAsBoolean() ? .6 :
+                   elevator.getHeight() > 30 ? .4 : 1,
                 /* Left Trigger is used as the robot centric button.
                  * While held, the robot will drive in robot centric mode. */
-                () -> driverController.leftTrigger().getAsBoolean()
+                () -> driverController.rightBumper().getAsBoolean()
             )
         );
 
         // Reset the field-centric heading on A press
-        driverController.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // Put the robot in brake mode while X is held
-        driverController.x().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
+        driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
-        driverController.rightTrigger().whileTrue(shooter.shoot(.5));
-        driverController.rightBumper().whileTrue(shooter.shoot(-.2));
+        driverController.rightTrigger().whileTrue(shooter.shoot(.3));
         
-        driverController.pov(270).onTrue(climber.climbToPosition(ClimberPosition.CLIMB));
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
         driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
     }
@@ -112,11 +110,17 @@ public class RobotContainer {
             .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
         operatorController.y().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L4))
             .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
-        
-        operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
+
+        operatorController.leftBumper().whileTrue(shooter.shoot(-.2));
         operatorController.rightBumper().whileTrue(
             algaeRemover.AlgaeRemoveArmOUt(AlgaePosition.OUT)
             .alongWith(shooter.shoot(-.3))
+        );
+        
+        operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
+        operatorController.pov(90).onTrue(
+            climber.climbToPosition(ClimberPosition.CLIMB)
+                .onlyIf(() -> funnel.hasBeenDropped())
         );
     }
 

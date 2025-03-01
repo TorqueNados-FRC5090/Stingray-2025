@@ -30,15 +30,19 @@ public class AlgaeRemover extends SubsystemBase{
         rightMotor = new SparkMax(ALGAE_RIGHT_MOTOR_ID, MotorType.kBrushless);
         leftPID = new GenericPID(leftMotor, ControlType.kPosition, P_GAIN);
         rightPID = new GenericPID(rightMotor, ControlType.kPosition, P_GAIN);
+        leftPID.activate(AlgaePosition.ZERO.getAngle());
+        rightPID.activate(AlgaePosition.ZERO.getAngle());
 
         SparkMaxConfig leaderMotorConfig = new SparkMaxConfig();
         leaderMotorConfig.idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(20)
             .inverted(true);
         leaderMotorConfig.encoder.positionConversionFactor(ALGAE_RATIO);
         leftMotor.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig followMotorConfig = new SparkMaxConfig();
         followMotorConfig.inverted(false)
+            .smartCurrentLimit(20)
             .idleMode(IdleMode.kBrake);
         followMotorConfig.encoder.positionConversionFactor(ALGAE_RATIO);
         rightMotor.configure(followMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -56,7 +60,7 @@ public class AlgaeRemover extends SubsystemBase{
     }
 
     public Command AlgaeRemoveArmOUt(AlgaePosition pos){
-        return runEnd(
+        return startEnd(
             () -> commandTwoPID(pos),
             () -> commandTwoPID(AlgaePosition.ZERO));
     }

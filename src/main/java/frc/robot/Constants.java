@@ -42,8 +42,8 @@ public final class Constants {
         public static final int ALGAE_LEFT_MOTOR_ID = 17;
         public static final int ALGAE_RIGHT_MOTOR_ID = 18;
 
-        public static final int SHOOTER_ENTRY_SENSOR_ID = 21;
-        public static final int SHOOTER_EXIT_SENSOR_ID = 20;
+        public static final int SHOOTER_ENTRY_SENSOR_ID = 20;
+        public static final int SHOOTER_EXIT_SENSOR_ID = 21;
         public static final int SHOOTER_LEFT_MOTOR_ID = 10;
         public static final int SHOOTER_RIGHT_MOTOR_ID = 11;
     }
@@ -65,13 +65,13 @@ public final class Constants {
     }
 
     public static final class AlgaeConstants {
-        public static final double P_GAIN = .005;
+        public static final double P_GAIN = .015;
 
-        public static final double ALGAE_RATIO = 360.0/25.0;
+        public static final double ALGAE_RATIO = 360.0/125.0;
 
         public enum AlgaePosition {
             ZERO(0),
-            OUT(55);
+            OUT(75);
 
             private double setpoint;
             AlgaePosition(double setpoint) {
@@ -89,7 +89,7 @@ public final class Constants {
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
-        public static final double CLIMBER_RATIO = 360.0/324.0;
+        public static final double CLIMBER_RATIO = 360.0/500.0;
 
         public enum ClimberPosition {
             /** Vertical */
@@ -132,7 +132,7 @@ public final class Constants {
             TROUGH(6.5),
             L2(15.8),
             L3(31.4),
-            L4( 55.4);
+            L4( 55.7);
             
             private double setpoint;
             ElevatorPosition(double setpoint) {

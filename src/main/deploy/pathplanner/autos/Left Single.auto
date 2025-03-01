@@ -13,7 +13,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorToL4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
@@ -23,15 +35,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "ElevatorToZero"
+            "waitTime": 2.0
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "J4 to Park L"
+            "name": "ElevatorToZero"
           }
         }
       ]

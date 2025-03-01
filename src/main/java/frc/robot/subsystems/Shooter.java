@@ -53,7 +53,7 @@ public class Shooter extends SubsystemBase {
 
     /** @return A command that drives the shooter at a given speed and stops when the command is cancelled */
     public Command shoot(double speed) {
-        return runEnd(
+        return startEnd(
             () -> spin(speed),
             () -> stop()
         );

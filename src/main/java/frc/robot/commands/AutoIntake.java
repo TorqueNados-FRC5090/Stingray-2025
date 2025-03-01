@@ -74,7 +74,7 @@ public class AutoIntake extends Command {
         switch (state) {
             case WAITING:
                 if(entry) { enterState(IntakeState.INDEXING); }
-                if(exit) { enterState(IntakeState.HOLDING); }
+                if(exit && !entry) { enterState(IntakeState.HOLDING); }
                 break;
 
             case INDEXING: // Once the piece is beyond the sensor, just hold it still

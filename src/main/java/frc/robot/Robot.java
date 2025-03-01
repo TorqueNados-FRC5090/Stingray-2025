@@ -5,11 +5,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 
 
 public class Robot extends TimedRobot {
     private RobotContainer robotContainer;
     private Command autonCommand;
+    private XboxController testingController;
 
     @Override
     public void robotInit() {
@@ -55,5 +57,24 @@ public class Robot extends TimedRobot {
     public void testInit() {
       // Kill any active commands when entering test mode
       CommandScheduler.getInstance().cancelAll();
+      // Initialize a testing controller
+      testingController = new XboxController(3);
+    }
+    
+    @Override
+    public void testPeriodic() {
+        if(testingController.getBButtonPressed())
+            robotContainer.climber.manual(.25);
+        else if (testingController.getBButtonReleased())
+            robotContainer.climber.manual(0);
+        
+        
+        if(testingController.getXButtonPressed())
+            robotContainer.climber.manual(-.25);
+        else if (testingController.getXButtonReleased())
+            robotContainer.climber.manual(0);
+
+        if(testingController.getAButtonPressed())
+            robotContainer.climber.resetEncoder();
     }
 }

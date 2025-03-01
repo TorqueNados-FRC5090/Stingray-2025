@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.0,
-        "y": 5.25
+        "x": 4.95,
+        "y": 5.2
       },
       "prevControl": {
-        "x": 5.157533299258923,
-        "y": 5.444121764943034
+        "x": 5.1075332992589235,
+        "y": 5.394121764943034
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,14 +50,7 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "ElevatorToL4",
-      "waypointRelativePos": 0.75,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
