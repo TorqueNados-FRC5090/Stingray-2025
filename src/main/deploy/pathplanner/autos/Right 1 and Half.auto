@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start L to J4"
+            "pathName": "Start R to E4"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ElevatorToL2"
+            "name": "ElevatorToL4"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
@@ -45,11 +45,29 @@
           "data": {
             "name": "ElevatorToZero"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E4 to Pickup R"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pickup R to D4"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left Autos",
+  "folder": "Right Autos",
   "choreoAuto": false
 }
