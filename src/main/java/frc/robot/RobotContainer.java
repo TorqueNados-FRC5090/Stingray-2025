@@ -78,20 +78,26 @@ public class RobotContainer {
                 /* Left Bumper is used as the slow driving button.
                  * While held, the speed of the robot is multiplied by .8 
                  * The speed is also reduced if the elevator is raised by more than 20 inches. */
-                () -> driverController.leftTrigger().getAsBoolean() ? .6 :
-                   elevator.getHeight() > 30 ? .4 : 1,
+                () -> {
+                    if (driverController.leftTrigger().getAsBoolean() || driverController.leftBumper().getAsBoolean()) 
+                        return .6;
+                    else if (elevator.getHeight() > 30)
+                        return .4;
+                    else
+                        return 1;
+                },
                 /* Left Trigger is used as the robot centric button.
                  * While held, the robot will drive in robot centric mode. */
-                () -> driverController.rightBumper().getAsBoolean()
+                () -> driverController.leftBumper().getAsBoolean()
             )
         );
 
         // Reset the field-centric heading on A press
-        driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         // Put the robot in brake mode while X is held
         driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
-        driverController.rightTrigger().whileTrue(shooter.shoot(.3));
+        driverController.rightTrigger().whileTrue(shooter.shoot(.2));
         
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
         driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));

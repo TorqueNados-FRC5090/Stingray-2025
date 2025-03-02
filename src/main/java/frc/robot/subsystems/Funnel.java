@@ -18,7 +18,10 @@ public class Funnel extends SubsystemBase {
     }
 
     public Command funnelDrop(){
-        return this.runOnce(() -> unlatch());
+        return this.startEnd(
+            () -> unlatch(),
+            () -> zero()
+        );
     }
 
     public boolean hasBeenDropped() {
