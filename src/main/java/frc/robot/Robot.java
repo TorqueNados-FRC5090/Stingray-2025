@@ -47,8 +47,8 @@ public class Robot extends TimedRobot {
             double headingDeg = robotContainer.drivetrain.getState().Pose.getRotation().getDegrees();
             double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);            
         
-            LimelightHelpers.SetRobotOrientation("limelight", headingDeg, omegaRps, 0, 0, 0, 0);
-            var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+            robotContainer.frontLimelight.SetRobotOrientation(headingDeg, omegaRps, 0, 0, 0, 0);
+            var llMeasurement = robotContainer.frontLimelight.getBotPoseEstimate_wpiBlue();
             if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
                 robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
             }
