@@ -22,7 +22,6 @@ import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.AlgaeRemover;
 
@@ -31,8 +30,7 @@ public class RobotContainer {
     private final CommandXboxController driverController = new CommandXboxController(DRIVER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_PORT);
     // Subsystems
-    public final LimeLight frontLimelight = new LimeLight("limelight-ultron");
-    public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain(frontLimelight);
+    public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final Funnel funnel = new Funnel();
     public final Shooter shooter = new Shooter();
