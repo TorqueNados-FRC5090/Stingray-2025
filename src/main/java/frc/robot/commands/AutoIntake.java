@@ -1,52 +1,98 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterConstants.ShooterPosition;
 import frc.robot.subsystems.Shooter;
 
-public class AutoIntake extends Command{
-    Shooter shooter;
-    double counter = 1;
-  
-    public AutoIntake(Shooter shooter){
-       this.shooter = shooter;
-       addRequirements(shooter);
+public class AutoIntake extends Command {
+    private Shooter shooter;
+    private IntakeState state;
+
+    private boolean entry;
+    private boolean exit;
+
+    /** A list of the states the intake can be in */
+    public enum IntakeState {
+        /** Sets the intake to a fast speed, ideal for getting a good hold on a piece */
+        WAITING(.3),
+        /** Sets the intake to a slow speed, ideal for indexing a piece */
+        INDEXING(.13),
+        /** Stops the intake, as to not overshoot the piece */
+        HOLDING(0);
+
+        public double speed;
+        private IntakeState(double speed) { this.speed = speed; }
     }
 
+
+    /** Constructs an AutoIntake Command
+     * This command attempts to index pieces as they come into the intake.
+     * It is meant to be run as a default command for the system, and cancelled
+     * by another command requiring the subsystem when pieces are shot.
+     * This is important because the cancellation should trigger a rerun of the
+     * initialize function.
+     * 
+     * @param shooter The intake/shooter system used to index pieces.
+     */
+    public AutoIntake(Shooter shooter) {
+        this.shooter = shooter;
+        addRequirements(shooter);
+    }
+
+
     @Override
-    public void initialize() {}
+    public void initialize() {
+        pollSensors();
+        
+        if(exit &&  !entry) { // Hold if we already have a piece loaded correctly
+            enterState(IntakeState.HOLDING);
+        }
+        else { // If we have no piece, or it is loaded incorrectly, go to the waiting state
+            enterState(IntakeState.WAITING);
+        }
+        
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (shooter.isEntrySensorBlocked() && counter == 1){
-            //shooter.shoot(.25);
-            shooter.driveShooterToPosition(ShooterPosition.Intake1.getcurrentpos()+shooter.getshooterposition());
-            counter = counter + 1;
-        }
-        else if (shooter.isEntrySensorBlocked() && counter == 2){
-            shooter.driveShooterToPosition(ShooterPosition.Slow.getcurrentpos()+shooter.getshooterposition());
-            if (shooter.isExitSensorBlocked()){
-                counter = 3;
-            }
+        pollSensors();
+        runStateMachine();
 
-        }
-        else if (shooter.isExitSensorBlocked()){
-            shooter.spin(0);
-        }
-        else {
-            shooter.spin(.15);
-            counter = 1;
+        SmartDashboard.putString("Intake State", state.toString());
+    }
+
+    private void pollSensors() {
+        entry = shooter.isEntrySensorBlocked();
+        exit = shooter.isExitSensorBlocked();
+    }
+
+    /** Runs the state machine by evaluating whether we should leave
+     *  our current state, and which state we should transition to.
+     */
+    private void runStateMachine() {
+        switch (state) {
+            case WAITING:
+                if(entry) { enterState(IntakeState.INDEXING); }
+                if(exit && !entry) { enterState(IntakeState.HOLDING); }
+                break;
+
+            case INDEXING: // Once the piece is beyond the sensor, just hold it still
+                if(!entry) { enterState(IntakeState.HOLDING); }
+                break;
+
+            case HOLDING: // If there is not a piece in the intake, go back to waiting
+                if(!entry && !exit) { enterState(IntakeState.WAITING); }
+                break;
+        
+            // If in an invalid state, transition to done
+            default: enterState(IntakeState.HOLDING);
         }
     }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {}
-
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false; // Has no end condition
+    private void enterState(IntakeState destination) {
+        shooter.spin(destination.speed);
+        state = destination;
     }
+
 }

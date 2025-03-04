@@ -39,8 +39,11 @@ public final class Constants {
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
 
-        public static final int SHOOTER_ENTRY_SENSOR_ID = 21;
-        public static final int SHOOTER_EXIT_SENSOR_ID = 20;
+        public static final int ALGAE_LEFT_MOTOR_ID = 17;
+        public static final int ALGAE_RIGHT_MOTOR_ID = 18;
+
+        public static final int SHOOTER_ENTRY_SENSOR_ID = 20;
+        public static final int SHOOTER_EXIT_SENSOR_ID = 21;
         public static final int SHOOTER_LEFT_MOTOR_ID = 10;
         public static final int SHOOTER_RIGHT_MOTOR_ID = 11;
     }
@@ -49,22 +52,33 @@ public final class Constants {
 
     public static final class ShooterConstants {
         public static final double P_GAIN = .27;
+        public static final double VEL_LIMIT = 100;
+        public static final double ACCEL_LIMIT = 59;
 
-        public enum ShooterPosition {
-            /** Intake */
-            Intake1(2),
-            /** Slow */
-            Slow(1),
-            /** Increment */
-            Inc(5);
+        /** Converts motor revolutions to inches of linear travel */
+        public static final double SHOOTER_RATIO = 2 * Math.PI;
+        /** The distance between the two sensors in inches */
+        public static final double SENSOR_SEPARATION = 6.5; 
+        /** The ideal position of the coral measured as inches 
+         * from the front of the piece to the entry sensor */
+        public static final double IDEAL_CORAL_POSITION = 10;
+    }
+
+    public static final class AlgaeConstants {
+        public static final double P_GAIN = .015;
+
+        public static final double ALGAE_RATIO = 360.0/125.0;
+
+        public enum AlgaePosition {
+            ZERO(0),
+            OUT(75);
 
             private double setpoint;
-            ShooterPosition(double setpoint) {
+            AlgaePosition(double setpoint) {
                 this.setpoint = setpoint;
             };
 
-            /** @return The angle of the Shooter associated with the setpoint */
-            public double getcurrentpos() {
+            public double getAngle() {
                 return setpoint;
             }
         }
@@ -75,7 +89,7 @@ public final class Constants {
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
-        public static final double CLIMBER_RATIO = 2.4;
+        public static final double CLIMBER_RATIO = 360.0/500.0;
 
         public enum ClimberPosition {
             /** Vertical */
@@ -83,7 +97,7 @@ public final class Constants {
             /** Out of robot, used to line up with cage */
             PREPARE(80, 2000),
             /** Inside robot, used when engaged with cage */
-            CLIMB(-80, 500);
+            CLIMB(-110, 500);
 
             private int pulseWidth;
             private double setpoint;
@@ -100,6 +114,34 @@ public final class Constants {
             /** @return The position of the servo associated with the pulse width */
             public int getServoPos() {
                 return pulseWidth;
+            }
+        }
+    }
+
+    public static final class ElevatorConstants {
+        public static final double P_GAIN = .225;
+        public static final double D_GAIN = .005;
+        public static final double VEL_LIMIT = 100;
+        public static final double ACCEL_LIMIT = 59;
+        
+        /** Converts elevator motor revolutions to inches of shooter travel */
+        public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
+
+        public enum ElevatorPosition {
+            ZERO(0),
+            TROUGH(6.5),
+            L2(15.8),
+            L3(31.4),
+            L4( 55.7);
+            
+            private double setpoint;
+            ElevatorPosition(double setpoint) {
+                this.setpoint = setpoint;
+            };
+
+            /** @return  */
+            public double getHeight() {
+                return setpoint;
             }
         }
     }
@@ -148,39 +190,16 @@ public final class Constants {
               public int getStripLength() { return stripLength; }
         }
     }
-
-    public static final class ElevatorConstants {
-        public static final double P_GAIN = .225;
-        public static final double D_GAIN = .005;
-        public static final double VEL_LIMIT = 100;
-        public static final double ACCEL_LIMIT = 59;
-        
-        /** Converts elevator motor revolutions to inches of shooter travel */
-        public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
-
-        public enum ElevatorPosition {
-            ZERO(0),
-            TROUGH(6.5),
-            L2(15.8),
-            L3(31.4),
-            L4( 55.4);
-            
-            private double setpoint;
-            ElevatorPosition(double setpoint) {
-                this.setpoint = setpoint;
-            };
-
-            /** @return  */
-            public double getHeight() {
-                return setpoint;
-            }
-        }
-    }
     
     
     /* -------------- DRIVETRAIN CONSTANTS -------------- */
 
     public static final class DriveConstants {
+        /** Translation instructions closer to 0 than the deadband will be set to 0 */
+        public static final double TRANSLATION_DEADBAND = .05;
+        /** Rotation instructions closer to 0 than the deadband will be set to 0 */
+        public static final double ROTATION_DEADBAND = .05;
+
         /** Higher values make the robot drive more aggressively */
         public static final double TRANSLATION_SLEW = 4;
         /** Higher values make the robot spin more aggressively */
@@ -190,11 +209,6 @@ public final class Constants {
         public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
         /** The maximum allowed spinning speed of the robot */
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-        
-        /** Translation instructions closer to 0 than the deadband will be set to 0 */
-        public static final double TRANSLATION_DEADBAND = .07 * MAX_TRANSLATION_SPEED;
-        /** Rotation instructions closer to 0 than the deadband will be set to 0 */
-        public static final double ROTATION_DEADBAND = .1 * MAX_ROTATION_SPEED;
     }
 
     public static final class PathPlannerConfigs {

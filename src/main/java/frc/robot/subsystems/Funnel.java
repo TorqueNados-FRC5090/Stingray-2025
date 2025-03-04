@@ -10,20 +10,27 @@ import frc.robot.wrappers.ServoManager;
 public class Funnel extends SubsystemBase {
 
     ServoChannel intakeServo;
+    boolean dropped;
 
     public Funnel(){
         intakeServo = ServoManager.getInstance().getServoInPort(INTAKE_SERVO_PORT);
+        dropped = false;
     }
 
     public Command funnelDrop(){
-        return this.runEnd(
+        return this.startEnd(
             () -> unlatch(),
             () -> zero()
         );
     }
 
+    public boolean hasBeenDropped() {
+        return dropped;
+    }
+
     public void unlatch(){
         intakeServo.setPulseWidth(2500);
+        dropped = true;
     }
      
     public void zero(){
