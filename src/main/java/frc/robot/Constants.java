@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.PathConstraints;
 
 // Imports
 import edu.wpi.first.math.geometry.Translation2d;
@@ -227,6 +228,15 @@ public final class Constants {
                 40, 4, 
                 MODULE_CONFIG, 
                 SwerveConstants.MODULE_TRANSLATIONS
+            );
+
+        /** Path constraints to be used during on the fly pathfinding */
+        public static final PathConstraints OTF_CONSTRAINTS = 
+            new PathConstraints(
+                3, 
+                3, 
+                Units.degreesToRadians(540), 
+                Units.degreesToRadians(720)
             );
     }
 

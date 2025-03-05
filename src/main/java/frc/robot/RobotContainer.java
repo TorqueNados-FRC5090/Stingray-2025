@@ -5,15 +5,19 @@ import static frc.robot.Constants.ControllerPorts.OPERATOR_PORT;
 import static frc.robot.Constants.DriveConstants.MAX_TRANSLATION_SPEED;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.PathPlannerConfigs;
 import frc.robot.Constants.AlgaeConstants.AlgaePosition;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.FieldConstants.ReefFace;
 import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
 import frc.robot.commands.DriveCommand;
@@ -101,6 +105,8 @@ public class RobotContainer {
         
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
         driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
+
+        driverController.back().whileTrue(driveToNearestBranch(true));
     }
     
     /** Configures a set of control bindings for the robot's operator */
@@ -131,5 +137,34 @@ public class RobotContainer {
     /** Use this to pass the autonomous command to the main {@link Robot} class. */
     public Command getAutonomousCommand() {
         return autonChooser.getSelected();
+    }
+
+    public Pose2d getNearestBranch(boolean left) {
+        double X1 = drivetrain.getPose().getX();
+        double Y1 = drivetrain.getPose().getY();
+        // Init the shortest distance as very far away
+        double shortestDistance = 9999;
+        Pose2d nearestBranch = new Pose2d();
+
+        for (ReefFace branchPair : ReefFace.values()) {
+            // Get the pose of only the branch we care about
+            Pose2d branchPose = left ? branchPair.getLeftBranchGoal() : branchPair.getRightBranchGoal();
+            double X2 = branchPose.getX();
+            if (onRedAlliance()) { X2 += 8.75; }
+            double Y2 = branchPose.getY();
+
+            double distance = Math.sqrt(Math.pow(X2 - X1, 2) + Math.pow(Y2 - Y1, 2));
+
+            if (distance < shortestDistance) {
+                shortestDistance = distance;
+                nearestBranch = branchPose;
+            }
+        }
+
+        return nearestBranch;
+    }
+
+    public Command driveToNearestBranch(boolean left) {
+        return AutoBuilder.pathfindToPose(getNearestBranch(false), PathPlannerConfigs.OTF_CONSTRAINTS, 0);
     }
 }
