@@ -1140,6 +1140,10 @@ public class Limelight {
         return getLimelightNTDouble("tid");
     }
 
+    public double[] getStdDevs() {
+        return getLimelightNTDoubleArray("stddevs");
+    }
+
     public String getNeuralClassID() {
         return getLimelightNTString("tclass");
     }
