@@ -4,8 +4,16 @@ import static frc.robot.Constants.ControllerPorts.DRIVER_PORT;
 import static frc.robot.Constants.ControllerPorts.OPERATOR_PORT;
 import static frc.robot.Constants.DriveConstants.MAX_TRANSLATION_SPEED;
 
-import com.ctre.phoenix6.swerve.SwerveRequest;
+import java.util.List;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -131,5 +139,44 @@ public class RobotContainer {
     /** Use this to pass the autonomous command to the main {@link Robot} class. */
     public Command getAutonomousCommand() {
         return autonChooser.getSelected();
+    }
+
+    
+    public PathPlannerPath generatePathToPrimaryTarget(boolean left) {
+        // Move the target by an offset in targetspace so it represents the goal position
+        frontLimelight.SetFidcuial3DOffset(0 * (left ? -1 : 1), 0, 0);
+        // Get the location of the primary target relative to the robot with offset
+        double[] goalPose_robot = frontLimelight.getTargetPose_RobotSpace();
+        // Get the pose of the robot on the field
+        Pose2d robotPose_field = drivetrain.getPose();
+
+        // Get the pose of the goal on the field as the robot sees it
+        Pose2d goalPose_percievedField = new Pose2d(
+            robotPose_field.getX() + goalPose_robot[0],
+            robotPose_field.getY() + goalPose_robot[1],
+            new Rotation2d(
+                robotPose_field.getRotation().getDegrees() + goalPose_robot[4]
+            )
+        );
+
+        // Make a list of places the robot should travel to
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            goalPose_percievedField
+        );
+
+        // Add speed limits for the path following
+        PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI);
+
+        // Create the path
+        PathPlannerPath path = new PathPlannerPath(
+            waypoints, 
+            constraints, 
+            null, 
+            new GoalEndState(0, goalPose_percievedField.getRotation())
+        );
+        path.preventFlipping = true;
+        
+        // Return the path
+        return path;
     }
 }
