@@ -148,9 +148,21 @@ public class RobotContainer {
 
         for (ReefFace branchPair : ReefFace.values()) {
             // Get the pose of only the branch we care about
-            Pose2d branchPose = left ? branchPair.getLeftBranchGoal() : branchPair.getRightBranchGoal();
+            Pose2d branchPose;
+            if (left) {
+                if (onRedAlliance())
+                    branchPose = branchPair.getLeftBranchGoalRed();
+                else
+                    branchPose = branchPair.getLeftBranchGoalBlue();
+            }
+            else {
+                if (onRedAlliance())
+                    branchPose = branchPair.getRightBranchGoalRed();
+                else
+                    branchPose = branchPair.getRightBranchGoalBlue();
+            }
+
             double X2 = branchPose.getX();
-            if (onRedAlliance()) { X2 += 8.75; }
             double Y2 = branchPose.getY();
 
             double distance = Math.sqrt(Math.pow(X2 - X1, 2) + Math.pow(Y2 - Y1, 2));
@@ -165,6 +177,6 @@ public class RobotContainer {
     }
 
     public Command driveToNearestBranch(boolean left) {
-        return AutoBuilder.pathfindToPose(getNearestBranch(false), PathPlannerConfigs.OTF_CONSTRAINTS, 0);
+        return AutoBuilder.pathfindToPose(getNearestBranch(left), PathPlannerConfigs.OTF_CONSTRAINTS, 0);
     }
 }
