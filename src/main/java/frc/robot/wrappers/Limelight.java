@@ -14,20 +14,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -610,9 +601,6 @@ public class Limelight {
         }
     }
 
-
-    private static ObjectMapper mapper;
-
     /**
      * Print JSON Parse time to the console in milliseconds
      */
@@ -913,21 +901,6 @@ public class Limelight {
     public String[] getLimelightNTStringArray(String entryName) {
         return getLimelightNTTableEntry(entryName).getStringArray(new String[0]);
     }
-
-
-    public URL getLimelightURLString(String request) {
-        String urlString = "http://" + limelightName + ".local:5807/" + request;
-        URL url;
-        try {
-            url = new URL(urlString);
-            return url;
-        } catch (MalformedURLException e) {
-            System.err.println("bad LL URL");
-        }
-        return null;
-    }
-    /////
-    /////
 
     /**
      * Does the Limelight have a valid target?
@@ -1447,7 +1420,7 @@ public class Limelight {
      * @param roll (Unnecessary) Robot roll in degrees
      * @param rollRate (Unnecessary) Angular velocity of robot roll in degrees per second
      */
-    public void SetRobotOrientation(double yaw, double yawRate, 
+    public void setRobotOrientation(double yaw, double yawRate, 
         double pitch, double pitchRate, 
         double roll, double rollRate) {
         SetRobotOrientation_INTERNAL(yaw, yawRate, pitch, pitchRate, roll, rollRate, true);
@@ -1584,67 +1557,5 @@ public class Limelight {
 
     public double[] getPythonScriptData() {
         return getLimelightNTDoubleArray("llpython");
-    }
-
-    /////
-    /////
-
-    /**
-     * Asynchronously take snapshot.
-     */
-    public CompletableFuture<Boolean> takeSnapshot(String snapshotName) {
-        return CompletableFuture.supplyAsync(() -> {
-            return SYNCH_TAKESNAPSHOT(snapshotName);
-        });
-    }
-
-    private boolean SYNCH_TAKESNAPSHOT(String snapshotName) {
-        URL url = getLimelightURLString("capturesnapshot");
-        try {
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            if (snapshotName != null && snapshotName != "") {
-                connection.setRequestProperty("snapname", snapshotName);
-            }
-
-            int responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
-                return true;
-            } else {
-                System.err.println("Bad LL Request");
-            }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * Gets the latest JSON results output and returns a LimelightResults object.
-     * @param limelightName Name of the Limelight camera
-     * @return LimelightResults object containing all current target data
-     */
-    public LimelightResults getLatestResults() {
-
-        long start = System.nanoTime();
-        Limelight.LimelightResults results = new Limelight.LimelightResults();
-        if (mapper == null) {
-            mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        }
-
-        try {
-            results = mapper.readValue(getJSONDump(), LimelightResults.class);
-        } catch (JsonProcessingException e) {
-            results.error = "lljson error: " + e.getMessage();
-        }
-
-        long end = System.nanoTime();
-        double millis = (end - start) * .000001;
-        results.latency_jsonParse = millis;
-        if (profileJSON) {
-            System.out.printf("lljson: %.2f\r\n", millis);
-        }
-
-        return results;
     }
 }

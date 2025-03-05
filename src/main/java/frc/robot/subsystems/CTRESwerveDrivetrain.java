@@ -11,19 +11,24 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.wrappers.Limelight;
+import frc.robot.wrappers.Limelight.PoseEstimate;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -53,6 +58,22 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
     public void driveRobotRelative(ChassisSpeeds speeds) {
         SwerveRequest.ApplyRobotSpeeds drive = new SwerveRequest.ApplyRobotSpeeds();
         setControl(drive.withSpeeds(speeds));
+    }
+
+    public void addMeasurementFromLimelight(Limelight limelight) {
+        SwerveDriveState driveState = this.getState();
+        /** Measured in Degrees */
+        double heading = driveState.Pose.getRotation().getDegrees();
+        /** Measured in Degrees per Second */
+        double angularSpeed = Units.radiansToDegrees(driveState.Speeds.omegaRadiansPerSecond);            
+    
+        limelight.setRobotOrientation(heading, angularSpeed, 0, 0, 0, 0);
+        PoseEstimate llMeasurement = limelight.getBotPoseEstimate_wpiBlue_MegaTag2();
+
+        // Add the vision measurement to the drivetrain if and only if we see a valid tag while not spinning faster than 2 rotations/second
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(angularSpeed) < 720) {
+            this.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(.5, .5, 9999999));
+        }
     }
 
     /* -------------- CONSTRUCTORS -------------- */
@@ -257,6 +278,10 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        SmartDashboard.putNumber("Drive pose X", getState().Pose.getX());
+        SmartDashboard.putNumber("Drive pose Y",  getState().Pose.getY());
+        SmartDashboard.putNumber("Heading Degrees", getState().Pose.getRotation().getDegrees());
     }
 
     private void startSimThread() {
