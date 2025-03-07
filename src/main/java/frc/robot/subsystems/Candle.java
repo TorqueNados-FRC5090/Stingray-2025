@@ -16,7 +16,7 @@ public class Candle extends SubsystemBase {
      *  @param ID CAN ID of the CANdle
      */
     public Candle(){
-        candle = new CANdle(CANDLE_ID, "Default Name");
+        candle = new CANdle(CANDLE_ID);
         candle.setStatusFramePeriod(CANdleStatusFrame.CANdleStatusFrame_Status_1_General, 500);
     }
     

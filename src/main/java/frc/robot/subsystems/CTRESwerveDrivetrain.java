@@ -40,9 +40,9 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
     private double m_lastSimTime;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-    private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
+    public final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-    private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
+    public final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
@@ -69,14 +69,23 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
     
         limelight.setRobotOrientation(heading, 0, 0, 0, 0, 0);
         PoseEstimate llMeasurement = limelight.getBotPoseEstimate_wpiBlue_MegaTag2();
-        double[] stdDevs = limelight.getStdDevs();
-        double stdDevX = stdDevs[6];
-        double stdDevY = stdDevs[7];
-        double stdDevYaw = stdDevs[11];
 
         // Add the vision measurement to the drivetrain if and only if we see a valid tag while not spinning faster than 2 rotations/second
         if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(angularSpeed) < 720) {
-            this.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(stdDevX, stdDevY, stdDevYaw));
+            this.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(.5, .5, 9999));
+        }
+    }
+
+    public void resetHeadingWithLimelight(Limelight limelight) {
+        SwerveDriveState driveState = this.getState();
+        /** Measured in Degrees per Second */
+        double angularSpeed = Units.radiansToDegrees(driveState.Speeds.omegaRadiansPerSecond);
+        PoseEstimate llMeasurement = limelight.getBotPoseEstimate_wpiBlue();
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(angularSpeed) < 720) {
+            this.resetRotation(llMeasurement.pose.getRotation());
+        }
+        else {
+            this.resetRotation(getOperatorForwardDirection());
         }
     }
 

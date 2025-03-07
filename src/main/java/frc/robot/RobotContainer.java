@@ -21,8 +21,10 @@ import frc.robot.FieldConstants.ReefFace;
 import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.LEDControl;
 import frc.robot.commands.SetElevatorTarget;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
+import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
@@ -42,7 +44,7 @@ public class RobotContainer {
     public final Shooter shooter = new Shooter();
     public final Climber climber = new Climber();
     public final Elevator elevator = new Elevator();
-    //public final Candle candleLEDS = new Candle();
+    public final Candle candleLEDS = new Candle();
     public final AlgaeRemover algaeRemover = new AlgaeRemover();
 
     // Misc objects
@@ -67,7 +69,7 @@ public class RobotContainer {
 
     private void setDefaultActions() {
         shooter.setDefaultCommand(new AutoIntake(shooter));
-        //candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
+        candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
     }
 
     /** Configures a set of control bindings for the robot's driver */
@@ -96,9 +98,7 @@ public class RobotContainer {
             )
         );
 
-        // Reset the field-centric heading on A press
-        driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        // Put the robot in brake mode while X is held
+        driverController.x().whileTrue(drivetrain.run(() -> drivetrain.resetHeadingWithLimelight(frontLimelight)));
         driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
         driverController.rightTrigger().whileTrue(shooter.shoot(.2));
@@ -149,18 +149,10 @@ public class RobotContainer {
         for (ReefFace branchPair : ReefFace.values()) {
             // Get the pose of only the branch we care about
             Pose2d branchPose;
-            if (left) {
-                if (onRedAlliance())
-                    branchPose = branchPair.getLeftBranchGoalRed();
-                else
-                    branchPose = branchPair.getLeftBranchGoalBlue();
-            }
-            else {
-                if (onRedAlliance())
-                    branchPose = branchPair.getRightBranchGoalRed();
-                else
-                    branchPose = branchPair.getRightBranchGoalBlue();
-            }
+            if (left)
+                branchPose = branchPair.getLeftBranchGoalBlue(onRedAlliance());
+            else
+                branchPose = branchPair.getRightBranchGoalBlue(onRedAlliance());
 
             double X2 = branchPose.getX();
             double Y2 = branchPose.getY();
@@ -170,6 +162,7 @@ public class RobotContainer {
             if (distance < shortestDistance) {
                 shortestDistance = distance;
                 nearestBranch = branchPose;
+                SmartDashboard.putString("Nearest Branch Face", branchPair.toString());
             }
         }
 

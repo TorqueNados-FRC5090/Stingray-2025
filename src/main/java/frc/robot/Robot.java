@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
@@ -24,7 +25,17 @@ public class Robot extends TimedRobot {
         // Cancel any commands that may have persisted through power off or redeploy
         CommandScheduler.getInstance().cancelAll();
 
+        // Tell the drivetrain what direction our forward is in
+        Rotation2d operatorPerspective = robotContainer.onRedAlliance() ? 
+            robotContainer.drivetrain.kRedAlliancePerspectiveRotation :
+            robotContainer.drivetrain.kBlueAlliancePerspectiveRotation;
+        robotContainer.drivetrain.setOperatorPerspectiveForward(operatorPerspective);
 
+        // Assume the robot starts facing its operator
+        Rotation2d oppositePerspective = robotContainer.onRedAlliance() ? 
+            robotContainer.drivetrain.kRedAlliancePerspectiveRotation :
+            robotContainer.drivetrain.kBlueAlliancePerspectiveRotation;
+        robotContainer.drivetrain.resetRotation(oppositePerspective);
     }
 
     @Override
@@ -33,6 +44,8 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         // Provide limelight data to the drivetrain every frame for localization
         robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.frontLimelight);
+
+        robotContainer.getNearestBranch(true);
     }
 
     @Override

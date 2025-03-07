@@ -12,6 +12,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -30,7 +32,6 @@ public class Elevator extends SubsystemBase {
         followerMotor = new SparkMax(ELEVATOR_RIGHT_MOTOR_ID, MotorType.kBrushless);
         elevatorPID = new ProfiledPIDController(P_GAIN, 0, D_GAIN, 
             new Constraints(VEL_LIMIT, ACCEL_LIMIT));
-        elevatorPID.setTolerance(1);
         
         // Configure the elevator motors   
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
@@ -47,8 +48,8 @@ public class Elevator extends SubsystemBase {
 
     // Getters
     public double getHeight() { return leadMotor.getEncoder().getPosition(); }
-    public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
     public ElevatorPosition getTargetPosition() { return targetPosition; }
+    public boolean atSetpoint() { return Math.abs(getHeight() - targetPosition.getHeight()) <= 1; }
 
     public void setTargetPosition(ElevatorPosition pos) { targetPosition = pos; }
 

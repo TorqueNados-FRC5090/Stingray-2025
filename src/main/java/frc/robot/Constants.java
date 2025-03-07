@@ -90,7 +90,7 @@ public final class Constants {
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
-        public static final double CLIMBER_RATIO = 360.0/500.0;
+        public static final double CLIMBER_RATIO = 360.0/900.0;
 
         public enum ClimberPosition {
             /** Vertical */

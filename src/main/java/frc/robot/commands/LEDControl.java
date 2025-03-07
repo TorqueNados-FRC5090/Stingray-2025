@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.LEDConstants.LEDColor;
@@ -28,12 +29,20 @@ public class LEDControl extends Command{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (shooter.isExitSensorBlocked()) 
-            candle.setAll(LEDColor.ORANGE);
-        else if (shooter.isExitSensorBlocked() && elevator.getTargetPosition() != ElevatorPosition.ZERO) 
+        if (RobotState.isDisabled())
+            candle.setAll(LEDColor.RED);
+        else if (RobotState.isAutonomous())
+            candle.setAll(LEDColor.PURPLE);
+        else if (readyToShoot())
             candle.setAll(LEDColor.GREEN);
-        else 
+        else if (shooter.isExitSensorBlocked())
+            candle.setAll(LEDColor.ORANGE);
+        else
             candle.setAll(LEDColor.BLUE);
+    }
+
+    private boolean readyToShoot() {
+        return shooter.isExitSensorBlocked() && elevator.getTargetPosition() != ElevatorPosition.ZERO && elevator.atSetpoint();
     }
 
     // Called once the command ends or is interrupted.
@@ -44,5 +53,10 @@ public class LEDControl extends Command{
     @Override
     public boolean isFinished() {
         return false; // Has no end condition
+    }
+
+    @Override
+    public boolean runsWhenDisabled() {
+        return true;
     }
 }
