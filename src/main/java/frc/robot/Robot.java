@@ -25,17 +25,7 @@ public class Robot extends TimedRobot {
         // Cancel any commands that may have persisted through power off or redeploy
         CommandScheduler.getInstance().cancelAll();
 
-        // Tell the drivetrain what direction our forward is in
-        Rotation2d operatorPerspective = robotContainer.onRedAlliance() ? 
-            robotContainer.drivetrain.kRedAlliancePerspectiveRotation :
-            robotContainer.drivetrain.kBlueAlliancePerspectiveRotation;
-        robotContainer.drivetrain.setOperatorPerspectiveForward(operatorPerspective);
-
-        // Assume the robot starts facing its operator
-        Rotation2d oppositePerspective = robotContainer.onRedAlliance() ? 
-            robotContainer.drivetrain.kRedAlliancePerspectiveRotation :
-            robotContainer.drivetrain.kBlueAlliancePerspectiveRotation;
-        robotContainer.drivetrain.resetRotation(oppositePerspective);
+        robotContainer.drivetrain.resetRotation(Rotation2d.k180deg);
     }
 
     @Override
@@ -44,8 +34,6 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         // Provide limelight data to the drivetrain every frame for localization
         robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.frontLimelight);
-
-        robotContainer.getNearestBranch(true);
     }
 
     @Override
@@ -72,10 +60,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-      // Kill any active commands when entering test mode
-      CommandScheduler.getInstance().cancelAll();
-      // Initialize a testing controller
-      testingController = new XboxController(3);
+        // Kill any active commands when entering test mode
+        CommandScheduler.getInstance().cancelAll();
+        // Initialize a testing controller
+        testingController = new XboxController(3);
     }
     
     @Override

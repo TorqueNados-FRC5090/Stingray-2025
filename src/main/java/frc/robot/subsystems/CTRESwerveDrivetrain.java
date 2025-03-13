@@ -76,19 +76,6 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
         }
     }
 
-    public void resetHeadingWithLimelight(Limelight limelight) {
-        SwerveDriveState driveState = this.getState();
-        /** Measured in Degrees per Second */
-        double angularSpeed = Units.radiansToDegrees(driveState.Speeds.omegaRadiansPerSecond);
-        PoseEstimate llMeasurement = limelight.getBotPoseEstimate_wpiBlue();
-        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(angularSpeed) < 720) {
-            this.resetRotation(llMeasurement.pose.getRotation());
-        }
-        else {
-            this.resetRotation(getOperatorForwardDirection());
-        }
-    }
-
     /* -------------- CONSTRUCTORS -------------- */
 
     /**

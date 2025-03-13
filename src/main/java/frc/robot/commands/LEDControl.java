@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.LEDConstants.LEDColor;
@@ -29,11 +28,7 @@ public class LEDControl extends Command{
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (RobotState.isDisabled())
-            candle.setAll(LEDColor.RED);
-        else if (RobotState.isAutonomous())
-            candle.setAll(LEDColor.PURPLE);
-        else if (readyToShoot())
+        if (readyToShoot())
             candle.setAll(LEDColor.GREEN);
         else if (shooter.isExitSensorBlocked())
             candle.setAll(LEDColor.ORANGE);

@@ -233,10 +233,10 @@ public final class Constants {
         /** Path constraints to be used during on the fly pathfinding */
         public static final PathConstraints OTF_CONSTRAINTS = 
             new PathConstraints(
-                3, 
-                3, 
-                Units.degreesToRadians(540), 
-                Units.degreesToRadians(720)
+                1, 
+                1, 
+                Units.degreesToRadians(360), 
+                Units.degreesToRadians(500)
             );
     }
 

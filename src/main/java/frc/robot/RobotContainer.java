@@ -64,7 +64,11 @@ public class RobotContainer {
 
     /** @return Whether the robot is on the red alliance or not */
     public boolean onRedAlliance() { 
-        return DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red);
+        try {
+            return DriverStation.getAlliance().get().equals(DriverStation.Alliance.Red);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void setDefaultActions() {
@@ -98,7 +102,7 @@ public class RobotContainer {
             )
         );
 
-        driverController.x().whileTrue(drivetrain.run(() -> drivetrain.resetHeadingWithLimelight(frontLimelight)));
+        driverController.x().whileTrue(drivetrain.run(() -> drivetrain.seedFieldCentric()));
         driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
         driverController.rightTrigger().whileTrue(shooter.shoot(.2));
@@ -107,6 +111,7 @@ public class RobotContainer {
         driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
 
         driverController.back().whileTrue(driveToNearestBranch(true));
+        driverController.start().whileTrue(driveToNearestBranch(false));
     }
     
     /** Configures a set of control bindings for the robot's operator */
@@ -162,10 +167,8 @@ public class RobotContainer {
             if (distance < shortestDistance) {
                 shortestDistance = distance;
                 nearestBranch = branchPose;
-                SmartDashboard.putString("Nearest Branch Face", branchPair.toString());
             }
         }
-
         return nearestBranch;
     }
 
