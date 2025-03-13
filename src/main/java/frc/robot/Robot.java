@@ -64,11 +64,11 @@ public class Robot extends TimedRobot {
     
     @Override
     public void testPeriodic() {
+        // Climber Controls
         if(testingController.getBButtonPressed())
             robotContainer.climber.manual(.25);
         else if (testingController.getBButtonReleased())
             robotContainer.climber.manual(0);
-        
         
         if(testingController.getXButtonPressed())
             robotContainer.climber.manual(-.25);
@@ -78,6 +78,7 @@ public class Robot extends TimedRobot {
         if(testingController.getAButtonPressed())
             robotContainer.climber.resetEncoder();
 
+        // Pivot Controls
         if(testingController.getLeftBumperButtonPressed())
             robotContainer.elevator.manualPivot(.1);
         else if(testingController.getLeftBumperButtonReleased())

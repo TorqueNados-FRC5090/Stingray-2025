@@ -38,24 +38,19 @@ public final class Constants {
 
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
-        public static final int PIVOT_MOTOR_ID = 19;
+        public static final int PIVOT_MOTOR_ID = 11;
 
         public static final int ALGAE_LEFT_MOTOR_ID = 17;
         public static final int ALGAE_RIGHT_MOTOR_ID = 18;
 
         public static final int SHOOTER_ENTRY_SENSOR_ID = 20;
         public static final int SHOOTER_EXIT_SENSOR_ID = 21;
-        public static final int SHOOTER_LEFT_MOTOR_ID = 10;
-        public static final int SHOOTER_RIGHT_MOTOR_ID = 11;
+        public static final int SHOOTER_MOTOR_ID = 10;
     }
 
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ShooterConstants {
-        public static final double P_GAIN = .27;
-        public static final double VEL_LIMIT = 100;
-        public static final double ACCEL_LIMIT = 59;
-
         /** Converts motor revolutions to inches of linear travel */
         public static final double SHOOTER_RATIO = 2 * Math.PI;
         /** The distance between the two sensors in inches */
