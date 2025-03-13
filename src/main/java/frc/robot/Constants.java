@@ -30,11 +30,10 @@ public final class Constants {
 
     public static final class SubsystemIDs {
         public static final int SERVO_HUB_CAN_ID = 3;
-        public static final int INTAKE_SERVO_PORT = 3;
+        public static final int RIO_SERVO_PORT = 2;
         public static final int CANDLE_ID = 13;
 
         public static final int CLIMBER_MOTOR_ID = 12;
-        public static final int CLIMBER_SERVO_PORT = 2;
 
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
@@ -89,27 +88,20 @@ public final class Constants {
 
         public enum ClimberPosition {
             /** Vertical */
-            ZERO(0,2000),
+            ZERO(0),
             /** Out of robot, used to line up with cage */
-            PREPARE(80, 2000),
+            PREPARE(80),
             /** Inside robot, used when engaged with cage */
-            CLIMB(-110, 500);
+            CLIMB(-110);
 
-            private int pulseWidth;
             private double setpoint;
-            ClimberPosition(double setpoint, int pulseWidth) {
+            ClimberPosition(double setpoint) {
                 this.setpoint = setpoint;
-                this.pulseWidth = pulseWidth;
             };
 
             /** @return The angle of the climber associated with the setpoint */
             public double getAngle() {
                 return setpoint;
-            }
-
-            /** @return The position of the servo associated with the pulse width */
-            public int getServoPos() {
-                return pulseWidth;
             }
         }
     }
