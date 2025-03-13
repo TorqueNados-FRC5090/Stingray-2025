@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledExit() {
         // Reset the elevator's setpoint to zero on enable
-        robotContainer.elevator.setTargetPosition(ElevatorPosition.ZERO);
+        robotContainer.elevator.setElevatorTarget(ElevatorPosition.ZERO);
     }
 
     @Override
@@ -50,7 +50,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         // This makes sure that the autonomous command stops when teleop starts
         if (autonCommand != null)
-            autonCommand.cancel();
+            autonCommand
+            .cancel();
     }
 
     @Override
@@ -76,5 +77,18 @@ public class Robot extends TimedRobot {
 
         if(testingController.getAButtonPressed())
             robotContainer.climber.resetEncoder();
+
+        if(testingController.getLeftBumperButtonPressed())
+            robotContainer.elevator.manualPivot(.1);
+        else if(testingController.getLeftBumperButtonReleased())
+            robotContainer.elevator.manualPivot(0);
+      
+        if(testingController.getRightBumperButtonPressed())
+            robotContainer.elevator.manualPivot(-.1);
+        else if(testingController.getRightBumperButtonReleased())
+            robotContainer.elevator.manualPivot(0);
+
+        if(testingController.getYButtonPressed())
+            robotContainer.elevator.resetPivotEncoder();
     }
 }

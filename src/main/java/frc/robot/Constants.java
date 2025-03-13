@@ -38,6 +38,7 @@ public final class Constants {
 
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
+        public static final int PIVOT_MOTOR_ID = 19;
 
         public static final int ALGAE_LEFT_MOTOR_ID = 17;
         public static final int ALGAE_RIGHT_MOTOR_ID = 18;
@@ -128,20 +129,23 @@ public final class Constants {
         public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
 
         public enum ElevatorPosition {
-            ZERO(0),
-            TROUGH(6.5),
-            L2(15.8),
-            L3(31.4),
-            L4( 55.7);
+            ZERO(0, 0),
+            TROUGH(6.5, 0),
+            L2(15.8, 0),
+            L3(31.4, 0),
+            L4( 55.7, 0);
             
+            private double angle;
             private double setpoint;
-            ElevatorPosition(double setpoint) {
+            ElevatorPosition(double setpoint, double angle) {
                 this.setpoint = setpoint;
             };
 
-            /** @return  */
             public double getHeight() {
                 return setpoint;
+            }
+            public double getAngle() {
+                return angle;
             }
         }
     }

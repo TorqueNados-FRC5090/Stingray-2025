@@ -30,7 +30,7 @@ public class LEDControl extends Command{
     public void execute() {
         if (shooter.isExitSensorBlocked()) 
             candle.setAll(LEDColor.ORANGE);
-        else if (shooter.isExitSensorBlocked() && elevator.getTargetPosition() != ElevatorPosition.ZERO) 
+        else if (shooter.isExitSensorBlocked() && elevator.getElevatorTarget() != ElevatorPosition.ZERO) 
             candle.setAll(LEDColor.GREEN);
         else 
             candle.setAll(LEDColor.BLUE);
