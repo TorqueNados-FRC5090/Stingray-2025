@@ -61,14 +61,14 @@ public class Elevator extends SubsystemBase {
     // Getters
     public double getHeight() { return elevatorLeader.getEncoder().getPosition(); }
     public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
-    public ElevatorPosition getElevatorTarget() { return elevatorTarget; }
+    public ElevatorPosition getTargetPosition() { return elevatorTarget; }
     
     public void resetPivotEncoder(){ pivotMotor.setPosition(0); }
     public void manualPivot(double speed) {
         pivotMotor.set(speed);
     }
 
-    public void setElevatorTarget(ElevatorPosition pos) { 
+    public void setTarget(ElevatorPosition pos) { 
         elevatorTarget = pos; 
         PositionVoltage pivotRequest = new PositionVoltage(pos.getAngle()).withSlot(0);
         pivotMotor.setControl(pivotRequest);
@@ -86,9 +86,8 @@ public class Elevator extends SubsystemBase {
         driveElevator();
 
         SmartDashboard.putNumber("Elevator Height", getHeight());
-        SmartDashboard.putString("Elevator Target Position", getElevatorTarget().toString());
-        SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
-
         SmartDashboard.putNumber("Pivot Angle", pivotMotor.getPosition().getValueAsDouble());
+        SmartDashboard.putString("Elevator Target Position", getTargetPosition().toString());
+        SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
     }
 }

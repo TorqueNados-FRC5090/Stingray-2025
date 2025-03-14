@@ -16,7 +16,7 @@ public class AutoIntake extends Command {
         /** Sets the intake to a fast speed, ideal for getting a good hold on a piece */
         WAITING(.3),
         /** Sets the intake to a slow speed, ideal for indexing a piece */
-        INDEXING(.13),
+        INDEXING(.2),
         /** Stops the intake, as to not overshoot the piece */
         HOLDING(0);
 

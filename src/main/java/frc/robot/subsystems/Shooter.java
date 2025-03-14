@@ -6,6 +6,7 @@ import static frc.robot.Constants.SubsystemIDs.SHOOTER_MOTOR_ID;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 
@@ -23,6 +24,7 @@ public class Shooter extends SubsystemBase {
 
         // Configure the motors
         TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
+        leaderConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         leadMotor.getConfigurator().apply(leaderConfig);
         
         

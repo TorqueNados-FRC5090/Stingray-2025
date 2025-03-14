@@ -126,6 +126,7 @@ public final class Constants {
             private double setpoint;
             ElevatorPosition(double setpoint, double angle) {
                 this.setpoint = setpoint;
+                this.angle = angle;
             };
 
             public double getHeight() {

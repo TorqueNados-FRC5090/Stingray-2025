@@ -17,7 +17,7 @@ public class SetElevatorTarget extends Command{
 
 
     @Override // Sets the elevator's target when the command starts
-    public void initialize() { elevator.setElevatorTarget(target); }
+    public void initialize() { elevator.setTarget(target); }
 
     @Override // Ends the command once the elevator has reached its target
     public boolean isFinished() { return elevator.atSetpoint(); }

@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledExit() {
         // Reset the elevator's setpoint to zero on enable
-        robotContainer.elevator.setElevatorTarget(ElevatorPosition.ZERO);
+        robotContainer.elevator.setTarget(ElevatorPosition.ZERO);
     }
 
     @Override
@@ -80,12 +80,12 @@ public class Robot extends TimedRobot {
 
         // Pivot Controls
         if(testingController.getLeftBumperButtonPressed())
-            robotContainer.elevator.manualPivot(.1);
+            robotContainer.elevator.manualPivot(.2);
         else if(testingController.getLeftBumperButtonReleased())
             robotContainer.elevator.manualPivot(0);
       
         if(testingController.getRightBumperButtonPressed())
-            robotContainer.elevator.manualPivot(-.1);
+            robotContainer.elevator.manualPivot(-.2);
         else if(testingController.getRightBumperButtonReleased())
             robotContainer.elevator.manualPivot(0);
 
