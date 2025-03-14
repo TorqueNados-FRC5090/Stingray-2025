@@ -58,7 +58,7 @@ public class AutonContainer {
         NamedCommands.registerCommand("ElevatorToL4", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L4));
         NamedCommands.registerCommand("ElevatorToL2", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L2));
         NamedCommands.registerCommand("ElevatorToZero", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
-        NamedCommands.registerCommand("Shoot", shooter.shoot(.2).withTimeout(.5));
+        NamedCommands.registerCommand("Shoot", shooter.shoot(.4).withTimeout(.5));
     }
 
     public SendableChooser<Command> buildAutonChooser() {

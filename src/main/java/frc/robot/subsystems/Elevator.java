@@ -53,7 +53,7 @@ public class Elevator extends SubsystemBase {
     public double getHeight() { return elevatorLeader.getEncoder().getPosition(); }
     public UpperChassisPose getTargetPosition() { return target; }
     public boolean atSetpoint() {
-        return Math.abs(getHeight() - target.getAngle()) <= 1;
+        return Math.abs(getHeight() - target.getHeight()) <= 1;
     }
 
     public void setTarget(UpperChassisPose pos) { 
