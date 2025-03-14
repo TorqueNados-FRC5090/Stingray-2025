@@ -17,8 +17,10 @@ import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.LEDControl;
 import frc.robot.commands.SetUpperChassisPose;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
+import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
@@ -39,7 +41,7 @@ public class RobotContainer {
     public final Shooter shooter = new Shooter();
     public final Climber climber = new Climber();
     public final Elevator elevator = new Elevator();
-    //public final Candle candleLEDS = new Candle();
+    public final Candle candleLEDS = new Candle();
     public final AlgaeRemover algaeRemover = new AlgaeRemover();
     public final Pivot pivot = new Pivot();
 
@@ -68,7 +70,7 @@ public class RobotContainer {
             new AutoIntake(shooter)
                 .andThen(shooter.shoot(-.1).withTimeout(1))
         );
-        //candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
+        candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
     }
 
     /** Configures a set of control bindings for the robot's driver */
