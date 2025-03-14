@@ -12,20 +12,20 @@ import frc.robot.Constants.UpperChassisPose;
 
 public class Pivot extends SubsystemBase{
     TalonFX pivotMotor;
-    UpperChassisPose target;
+    UpperChassisPose target = UpperChassisPose.ZERO;
 
     public Pivot() {
         // Pivot init and config
         pivotMotor = new TalonFX(PIVOT_MOTOR_ID);
         Slot0Configs pivotPIDConfig = new Slot0Configs();
-        pivotPIDConfig.kP = 0.3;
-        pivotPIDConfig.kD = .005;
+        pivotPIDConfig.kP = 0.4;
+        pivotPIDConfig.kD = .007;
         pivotMotor.getConfigurator().apply(pivotPIDConfig);
     }
 
     public double getAngle() { return pivotMotor.getPosition().getValueAsDouble(); }
     public boolean atSetpoint() {
-        return Math.abs(getAngle() - target.getAngle()) <= 1;
+        return Math.abs(getAngle() - target.getAngle()) <= 5;
     }
 
     public void resetPivotEncoder(){ pivotMotor.setPosition(0); }

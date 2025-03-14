@@ -14,9 +14,9 @@ public class AutoIntake extends Command {
     /** A list of the states the intake can be in */
     public enum IntakeState {
         /** Sets the intake to a fast speed, ideal for getting a good hold on a piece */
-        WAITING(.3),
+        WAITING(.5),
         /** Sets the intake to a slow speed, ideal for indexing a piece */
-        INDEXING(.2),
+        INDEXING(.3),
         /** Stops the intake, as to not overshoot the piece */
         HOLDING(0);
 

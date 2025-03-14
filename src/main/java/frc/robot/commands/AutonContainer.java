@@ -30,6 +30,7 @@ public class AutonContainer {
         this.drivetrain = robot.drivetrain;
         this.shooter = robot.shooter;
         this.elevator = robot.elevator;
+        this.pivot = robot.pivot;
         registerNamedCommands();
 
         // Attempt to load the pathplanner config from GUI

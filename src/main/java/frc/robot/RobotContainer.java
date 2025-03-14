@@ -68,7 +68,8 @@ public class RobotContainer {
     private void setDefaultActions() {
         shooter.setDefaultCommand(
             new AutoIntake(shooter)
-                .andThen(shooter.shoot(-.1).withTimeout(1))
+                .andThen(shooter.shoot(-.1).withTimeout(.6))
+                .andThen(shooter.shoot(0))
         );
         candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
     }
@@ -104,7 +105,7 @@ public class RobotContainer {
         // Put the robot in brake mode while X is held
         driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
-        driverController.rightTrigger().whileTrue(shooter.shoot(.2));
+        driverController.rightTrigger().whileTrue(shooter.shoot(.4));
         
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
         driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
@@ -125,7 +126,7 @@ public class RobotContainer {
         operatorController.leftBumper().whileTrue(shooter.shoot(-.2));
         operatorController.rightBumper().whileTrue(
             algaeRemover.AlgaeRemoveArmOUt(AlgaePosition.OUT)
-            .alongWith(shooter.shoot(-.3))
+            .alongWith(shooter.shoot(-.5))
         );
         
         operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
