@@ -64,7 +64,10 @@ public class RobotContainer {
     }
 
     private void setDefaultActions() {
-        shooter.setDefaultCommand(new AutoIntake(shooter));
+        shooter.setDefaultCommand(
+            new AutoIntake(shooter)
+                .andThen(shooter.shoot(-.1).withTimeout(1))
+        );
         //candleLEDS.setDefaultCommand(new LEDControl(candleLEDS, this));
     }
 

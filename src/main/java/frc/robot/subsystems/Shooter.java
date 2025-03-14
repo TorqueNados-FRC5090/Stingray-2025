@@ -1,15 +1,19 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.ShooterConstants.P_GAIN;
 import static frc.robot.Constants.SubsystemIDs.SHOOTER_ENTRY_SENSOR_ID;
 import static frc.robot.Constants.SubsystemIDs.SHOOTER_EXIT_SENSOR_ID;
 import static frc.robot.Constants.SubsystemIDs.SHOOTER_MOTOR_ID;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +29,7 @@ public class Shooter extends SubsystemBase {
         // Configure the motors
         TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
         leaderConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        leaderConfig.Slot0.kP = P_GAIN;
         leadMotor.getConfigurator().apply(leaderConfig);
         
         
@@ -51,10 +56,14 @@ public class Shooter extends SubsystemBase {
 
 
     public void spin(double speed) { 
-        leadMotor.set(speed); 
+        leadMotor.setControl(new VoltageOut(speed * RobotController.getBatteryVoltage())); 
     }
     public void stop() { 
-        leadMotor.stopMotor(); 
+        leadMotor.setControl(new VoltageOut(0)); 
+    }
+    public void setSetpoint() {
+        PositionVoltage request = new PositionVoltage(0).withSlot(0);
+        leadMotor.setControl(request);
     }
 
     public void setEncoder(double position) { leadMotor.setPosition(position); }

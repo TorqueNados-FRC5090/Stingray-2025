@@ -62,6 +62,11 @@ public class AutoIntake extends Command {
         SmartDashboard.putString("Intake State", state.toString());
     }
 
+    @Override // Once we are holding a piece, just end
+    public boolean isFinished() {
+        return state == IntakeState.HOLDING;
+    }
+
     private void pollSensors() {
         entry = shooter.isEntrySensorBlocked();
         exit = shooter.isExitSensorBlocked();
@@ -94,5 +99,4 @@ public class AutoIntake extends Command {
         shooter.spin(destination.speed);
         state = destination;
     }
-
 }

@@ -50,6 +50,7 @@ public final class Constants {
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ShooterConstants {
+        public static final double P_GAIN = 0;
         /** Converts motor revolutions to inches of linear travel */
         public static final double SHOOTER_RATIO = 2 * Math.PI;
         /** The distance between the two sensors in inches */
