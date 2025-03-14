@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.Constants.UpperChassisPose;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 
 /** A container that stores various procedures for the autonomous portion of the game */
@@ -22,6 +23,7 @@ public class AutonContainer {
     private CTRESwerveDrivetrain drivetrain;
     private Shooter shooter;
     private Elevator elevator;
+    private Pivot pivot;
 
     /** Constructs an AutonContainer object */ 
     public AutonContainer(RobotContainer robot) {
@@ -52,9 +54,9 @@ public class AutonContainer {
     }
 
     private void registerNamedCommands() {
-        NamedCommands.registerCommand("ElevatorToL4", new SetElevatorTarget(elevator, ElevatorPosition.L4));
-        NamedCommands.registerCommand("ElevatorToL2", new SetElevatorTarget(elevator, ElevatorPosition.L2));
-        NamedCommands.registerCommand("ElevatorToZero", new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
+        NamedCommands.registerCommand("ElevatorToL4", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L4));
+        NamedCommands.registerCommand("ElevatorToL2", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L2));
+        NamedCommands.registerCommand("ElevatorToZero", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
         NamedCommands.registerCommand("Shoot", shooter.shoot(.2).withTimeout(.5));
     }
 

@@ -6,7 +6,7 @@ import frc.robot.Constants.LEDConstants.LEDColor;
 import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Shooter;
-import frc.robot.Constants.ElevatorConstants.*;
+import frc.robot.Constants.UpperChassisPose;
 
 public class LEDControl extends Command{
     
@@ -30,7 +30,7 @@ public class LEDControl extends Command{
     public void execute() {
         if (shooter.isExitSensorBlocked()) 
             candle.setAll(LEDColor.ORANGE);
-        else if (shooter.isExitSensorBlocked() && elevator.getTargetPosition() != ElevatorPosition.ZERO) 
+        else if (shooter.isExitSensorBlocked() && elevator.getTargetPosition() != UpperChassisPose.ZERO) 
             candle.setAll(LEDColor.GREEN);
         else 
             candle.setAll(LEDColor.BLUE);

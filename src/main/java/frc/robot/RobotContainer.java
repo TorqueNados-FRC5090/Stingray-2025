@@ -11,18 +11,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.UpperChassisPose;
 import frc.robot.Constants.AlgaeConstants.AlgaePosition;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
 import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
 import frc.robot.commands.DriveCommand;
-import frc.robot.commands.SetElevatorTarget;
+import frc.robot.commands.SetUpperChassisPose;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LimeLight;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.AlgaeRemover;
 
@@ -40,6 +41,7 @@ public class RobotContainer {
     public final Elevator elevator = new Elevator();
     //public final Candle candleLEDS = new Candle();
     public final AlgaeRemover algaeRemover = new AlgaeRemover();
+    public final Pivot pivot = new Pivot();
 
     // Misc objects
     private final AutonContainer auton = new AutonContainer(this);
@@ -106,14 +108,14 @@ public class RobotContainer {
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
         // When a button is pressed, start going to its position, return to zero when button is released
-        operatorController.a().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.TROUGH))
-            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));                
-        operatorController.b().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L2))
-            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
-        operatorController.x().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L3))
-            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
-        operatorController.y().onTrue(new SetElevatorTarget(elevator, ElevatorPosition.L4))
-            .onFalse(new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
+        operatorController.a().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.TROUGH))
+            .onFalse(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));                
+        operatorController.b().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L2))
+            .onFalse(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
+        operatorController.x().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L3))
+            .onFalse(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
+        operatorController.y().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L4))
+            .onFalse(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
 
         operatorController.leftBumper().whileTrue(shooter.shoot(-.2));
         operatorController.rightBumper().whileTrue(

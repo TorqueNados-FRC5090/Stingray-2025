@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.Constants.UpperChassisPose;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledExit() {
         // Reset the elevator's setpoint to zero on enable
-        robotContainer.elevator.setTarget(ElevatorPosition.ZERO);
+        robotContainer.elevator.setTarget(UpperChassisPose.ZERO);
     }
 
     @Override
@@ -80,16 +80,16 @@ public class Robot extends TimedRobot {
 
         // Pivot Controls
         if(testingController.getLeftBumperButtonPressed())
-            robotContainer.elevator.manualPivot(.2);
+            robotContainer.pivot.manualPivot(.2);
         else if(testingController.getLeftBumperButtonReleased())
-            robotContainer.elevator.manualPivot(0);
+            robotContainer.pivot.manualPivot(0);
       
         if(testingController.getRightBumperButtonPressed())
-            robotContainer.elevator.manualPivot(-.2);
+            robotContainer.pivot.manualPivot(-.2);
         else if(testingController.getRightBumperButtonReleased())
-            robotContainer.elevator.manualPivot(0);
+            robotContainer.pivot.manualPivot(0);
 
         if(testingController.getYButtonPressed())
-            robotContainer.elevator.resetPivotEncoder();
+            robotContainer.pivot.resetPivotEncoder();
     }
 }

@@ -84,7 +84,7 @@ public final class Constants {
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
-        public static final double CLIMBER_RATIO = 360.0/500.0;
+        public static final double CLIMBER_RATIO = 360.0/900.0;
 
         public enum ClimberPosition {
             /** Vertical */
@@ -114,27 +114,32 @@ public final class Constants {
         
         /** Converts elevator motor revolutions to inches of shooter travel */
         public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
+    }
 
-        public enum ElevatorPosition {
-            ZERO(0, 0),
-            TROUGH(6.5, 0),
-            L2(15.8, 0),
-            L3(31.4, 0),
-            L4( 55.7, 0);
-            
-            private double angle;
-            private double setpoint;
-            ElevatorPosition(double setpoint, double angle) {
-                this.setpoint = setpoint;
-                this.angle = angle;
-            };
+    public static final class PivotConstants {
+        public static final double P_GAIN = .225;
+        public static final double D_GAIN = .005;
+    }
 
-            public double getHeight() {
-                return setpoint;
-            }
-            public double getAngle() {
-                return angle;
-            }
+    public enum UpperChassisPose {
+        ZERO(0, 0),
+        TROUGH(3, 0),
+        L2(9.4, 20),
+        L3(25.1, 20),
+        L4( 55.7, 50);
+        
+        private double height;
+        private double angle;
+        UpperChassisPose(double height, double angle) {
+            this.height = height;
+            this.angle = angle;
+        };
+
+        public double getHeight() {
+            return height;
+        }
+        public double getAngle() {
+            return angle;
         }
     }
 
