@@ -58,14 +58,14 @@ public class AutonContainer {
         NamedCommands.registerCommand("ElevatorToL4", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L4));
         NamedCommands.registerCommand("ElevatorToL2", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L2));
         NamedCommands.registerCommand("ElevatorToZero", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
-        NamedCommands.registerCommand("Shoot", shooter.shoot(.4).withTimeout(.5));
+        NamedCommands.registerCommand("Shoot", shooter.shoot(.4).withTimeout(.5).asProxy());
     }
 
     public SendableChooser<Command> buildAutonChooser() {
         SendableChooser<Command> chooser = new SendableChooser<Command>();
         chooser.setDefaultOption("Do Nothing", doNothing());
         chooser.addOption("Right 1.5", AutoBuilder.buildAuto("Right 1 and Half"));
-        chooser.addOption("Left 1.5", AutoBuilder.buildAuto("Left 1 and Half"));
+        chooser.addOption("Left Double", AutoBuilder.buildAuto("Left Double"));
         chooser.addOption("Center Single", AutoBuilder.buildAuto("Center Single"));
         return chooser;
     }

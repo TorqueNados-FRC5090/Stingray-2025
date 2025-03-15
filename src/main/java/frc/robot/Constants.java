@@ -93,7 +93,7 @@ public final class Constants {
             /** Out of robot, used to line up with cage */
             PREPARE(80),
             /** Inside robot, used when engaged with cage */
-            CLIMB(-110);
+            CLIMB(-120);
 
             private double setpoint;
             ClimberPosition(double setpoint) {
