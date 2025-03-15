@@ -5,7 +5,10 @@ import static frc.robot.Constants.ControllerPorts.OPERATOR_PORT;
 import static frc.robot.Constants.DriveConstants.MAX_TRANSLATION_SPEED;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -130,10 +133,27 @@ public class RobotContainer {
             climber.climbToPosition(ClimberPosition.CLIMB)
                 .onlyIf(() -> funnel.hasBeenDropped())
         );
+
+        operatorController.leftTrigger().whileTrue(driveToPose(FieldConstants.ReefFace.F.getRightBranchGoalBlue()));
+        operatorController.rightTrigger().whileTrue(driveToPose(FieldConstants.ReefFace.B.getLeftBranchGoalBlue()));
     }
 
     /** Use this to pass the autonomous command to the main {@link Robot} class. */
     public Command getAutonomousCommand() {
         return autonChooser.getSelected();
+    }
+
+    public Command driveToPose(Pose2d pose) {
+        return AutoBuilder.pathfindToPose(
+            pose, 
+            new PathConstraints(
+                2,
+                1,
+                2,
+                2,
+                12
+            ),
+            0
+        );
     }
 }

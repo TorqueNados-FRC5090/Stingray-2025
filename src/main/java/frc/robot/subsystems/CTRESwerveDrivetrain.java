@@ -69,14 +69,10 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
     
         limelight.setRobotOrientation(heading, 0, 0, 0, 0, 0);
         PoseEstimate llMeasurement = limelight.getBotPoseEstimate_wpiBlue_MegaTag2();
-        double[] stdDevs = limelight.getStdDevs();
-        double stdDevX = stdDevs[6];
-        double stdDevY = stdDevs[7];
-        double stdDevYaw = stdDevs[11];
 
         // Add the vision measurement to the drivetrain if and only if we see a valid tag while not spinning faster than 2 rotations/second
         if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(angularSpeed) < 720) {
-            this.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(stdDevX, stdDevY, stdDevYaw));
+            this.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(.5, .5, 9999));
         }
     }
 

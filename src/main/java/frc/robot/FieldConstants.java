@@ -29,25 +29,11 @@ public final class FieldConstants {
             );
         }
 
-        public Pose2d getLeftBranchGoalBlue(boolean onRedAlliance) { 
-            if (onRedAlliance) {
-                return new Pose2d(
-                    new Translation2d(17.54 - leftBranchGoal.getX(), leftBranchGoal.getY()), 
-                        Rotation2d.fromDegrees((leftBranchGoal.getRotation().getDegrees() + 180) % 360)
-                );
-            }
-            else
-                return leftBranchGoal;
+        public Pose2d getLeftBranchGoalBlue() { 
+            return leftBranchGoal;
         }
-        public Pose2d getRightBranchGoalBlue(boolean onRedAlliance) { 
-            if (onRedAlliance) {
-                return new Pose2d(
-                    new Translation2d(17.54 - rightBranchGoal.getX(), rightBranchGoal.getY()), 
-                        Rotation2d.fromDegrees((rightBranchGoal.getRotation().getDegrees() + 180) % 360)
-                );
-            }
-            else
-                return rightBranchGoal; 
+        public Pose2d getRightBranchGoalBlue() { 
+            return rightBranchGoal; 
         }
     }
 }
