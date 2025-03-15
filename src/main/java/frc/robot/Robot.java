@@ -23,12 +23,16 @@ public class Robot extends TimedRobot {
 
         // Cancel any commands that may have persisted through power off or redeploy
         CommandScheduler.getInstance().cancelAll();
+
+
     }
 
     @Override
-    public void robotPeriodic() {    
-        // Always run the command scheduler to allow it to function
+    public void robotPeriodic() {
+        // Run the command scheduler constantly so it can function
         CommandScheduler.getInstance().run();
+        // Provide limelight data to the drivetrain every frame for localization
+        robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.frontLimelight);
     }
 
     @Override
