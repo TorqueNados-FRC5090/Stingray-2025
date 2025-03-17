@@ -30,31 +30,27 @@ public final class Constants {
 
     public static final class SubsystemIDs {
         public static final int SERVO_HUB_CAN_ID = 3;
-        public static final int INTAKE_SERVO_PORT = 3;
+        public static final int RIO_SERVO_PORT = 2;
         public static final int CANDLE_ID = 13;
 
         public static final int CLIMBER_MOTOR_ID = 12;
-        public static final int CLIMBER_SERVO_PORT = 2;
 
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
+        public static final int PIVOT_MOTOR_ID = 11;
 
         public static final int ALGAE_LEFT_MOTOR_ID = 17;
         public static final int ALGAE_RIGHT_MOTOR_ID = 18;
 
         public static final int SHOOTER_ENTRY_SENSOR_ID = 20;
         public static final int SHOOTER_EXIT_SENSOR_ID = 21;
-        public static final int SHOOTER_LEFT_MOTOR_ID = 10;
-        public static final int SHOOTER_RIGHT_MOTOR_ID = 11;
+        public static final int SHOOTER_MOTOR_ID = 10;
     }
 
     /* -------------- SUBSYTEM CONSTANTS -------------- */
 
     public static final class ShooterConstants {
-        public static final double P_GAIN = .27;
-        public static final double VEL_LIMIT = 100;
-        public static final double ACCEL_LIMIT = 59;
-
+        public static final double P_GAIN = 0;
         /** Converts motor revolutions to inches of linear travel */
         public static final double SHOOTER_RATIO = 2 * Math.PI;
         /** The distance between the two sensors in inches */
@@ -89,31 +85,24 @@ public final class Constants {
         public static final double P_GAIN = .27;
 
         /** Converts climber motor revolutions to degrees of climber travel */
-        public static final double CLIMBER_RATIO = 360.0/500.0;
+        public static final double CLIMBER_RATIO = 360.0/900.0;
 
         public enum ClimberPosition {
             /** Vertical */
-            ZERO(0,2000),
+            ZERO(0),
             /** Out of robot, used to line up with cage */
-            PREPARE(80, 2000),
+            PREPARE(80),
             /** Inside robot, used when engaged with cage */
-            CLIMB(-110, 500);
+            CLIMB(-120);
 
-            private int pulseWidth;
             private double setpoint;
-            ClimberPosition(double setpoint, int pulseWidth) {
+            ClimberPosition(double setpoint) {
                 this.setpoint = setpoint;
-                this.pulseWidth = pulseWidth;
             };
 
             /** @return The angle of the climber associated with the setpoint */
             public double getAngle() {
                 return setpoint;
-            }
-
-            /** @return The position of the servo associated with the pulse width */
-            public int getServoPos() {
-                return pulseWidth;
             }
         }
     }
@@ -126,23 +115,32 @@ public final class Constants {
         
         /** Converts elevator motor revolutions to inches of shooter travel */
         public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
+    }
 
-        public enum ElevatorPosition {
-            ZERO(0),
-            TROUGH(6.5),
-            L2(15.8),
-            L3(31.4),
-            L4( 55.7);
-            
-            private double setpoint;
-            ElevatorPosition(double setpoint) {
-                this.setpoint = setpoint;
-            };
+    public static final class PivotConstants {
+        public static final double P_GAIN = .225;
+        public static final double D_GAIN = .005;
+    }
 
-            /** @return  */
-            public double getHeight() {
-                return setpoint;
-            }
+    public enum UpperChassisPose {
+        ZERO(0, 0),
+        TROUGH(3, 0),
+        L2(9.4, 20),
+        L3(25.1, 20),
+        L4( 55.4, 75);
+        
+        private double height;
+        private double angle;
+        UpperChassisPose(double height, double angle) {
+            this.height = height;
+            this.angle = angle;
+        };
+
+        public double getHeight() {
+            return height;
+        }
+        public double getAngle() {
+            return angle;
         }
     }
 

@@ -1,19 +1,18 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.SubsystemIDs.INTAKE_SERVO_PORT;
-import com.revrobotics.servohub.ServoChannel;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.wrappers.ServoManager;
 
 public class Funnel extends SubsystemBase {
 
-    ServoChannel intakeServo;
+    PWM servoPort;
     boolean dropped;
 
     public Funnel(){
-        intakeServo = ServoManager.getInstance().getServoInPort(INTAKE_SERVO_PORT);
+        servoPort = new PWM(0);
+        servoPort.setPosition(0);
         dropped = false;
     }
 
@@ -29,16 +28,16 @@ public class Funnel extends SubsystemBase {
     }
 
     public void unlatch(){
-        intakeServo.setPulseWidth(2500);
+        servoPort.setPosition(1);
         dropped = true;
     }
      
     public void zero(){
-        intakeServo.setPulseWidth(1500);
+        servoPort.setPosition(0);
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Servo", intakeServo.getPulseWidth());
+        SmartDashboard.putNumber("Servo", servoPort.getPosition());
     }
 }

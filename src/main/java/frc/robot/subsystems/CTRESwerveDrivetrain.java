@@ -11,12 +11,13 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -26,14 +27,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.wrappers.Limelight;
+import frc.robot.wrappers.Limelight.PoseEstimate;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-    private LimeLight odometryLimelight;
-
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -59,6 +60,22 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
         setControl(drive.withSpeeds(speeds));
     }
 
+    public void addMeasurementFromLimelight(Limelight limelight) {
+        SwerveDriveState driveState = this.getState();
+        /** Measured in Degrees */
+        double heading = driveState.Pose.getRotation().getDegrees();
+        /** Measured in Degrees per Second */
+        double angularSpeed = Units.radiansToDegrees(driveState.Speeds.omegaRadiansPerSecond);            
+    
+        limelight.setRobotOrientation(heading, 0, 0, 0, 0, 0);
+        PoseEstimate llMeasurement = limelight.getBotPoseEstimate_wpiBlue_MegaTag2();
+
+        // Add the vision measurement to the drivetrain if and only if we see a valid tag while not spinning faster than 2 rotations/second
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(angularSpeed) < 720) {
+            this.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(.5, .5, 9999));
+        }
+    }
+
     /* -------------- CONSTRUCTORS -------------- */
 
     /**
@@ -73,11 +90,9 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
      */
     public CTRESwerveDrivetrain(
         SwerveDrivetrainConstants drivetrainConstants,
-        LimeLight odometryLimelight,
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, modules);
-        this.odometryLimelight = odometryLimelight;
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -246,15 +261,6 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
 
     @Override
     public void periodic() {
-        double[] llPose = odometryLimelight.getBotPoseField();
-        Pose2d pose = new Pose2d(
-            new Translation2d(llPose[0], llPose[2]),
-            new Rotation2d(llPose[5])
-        );
-        //this.addVisionMeasurement(pose, Utils.getCurrentTimeSeconds());
-
-        SmartDashboard.putNumber("Odometry Limelight Pose X", pose.getX());
-        SmartDashboard.putNumber("Odometry Limelight Pose Y", pose.getY());
         /*
          * Periodically try to apply the operator perspective.
          * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -272,6 +278,10 @@ public class CTRESwerveDrivetrain extends TunerSwerveDrivetrain implements Subsy
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+
+        SmartDashboard.putNumber("Drive pose X", getState().Pose.getX());
+        SmartDashboard.putNumber("Drive pose Y",  getState().Pose.getY());
+        SmartDashboard.putNumber("Heading Degrees", getState().Pose.getRotation().getDegrees());
     }
 
     private void startSimThread() {

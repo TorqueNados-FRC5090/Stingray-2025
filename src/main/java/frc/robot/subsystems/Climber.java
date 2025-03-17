@@ -1,29 +1,26 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.servohub.ServoChannel;
-import static frc.robot.Constants.ClimberConstants.*;
+import static frc.robot.Constants.ClimberConstants.CLIMBER_RATIO;
+import static frc.robot.Constants.ClimberConstants.P_GAIN;
 import static frc.robot.Constants.SubsystemIDs.CLIMBER_MOTOR_ID;
-import static frc.robot.Constants.SubsystemIDs.CLIMBER_SERVO_PORT;
 
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.wrappers.GenericPID;
-import frc.robot.wrappers.ServoManager;
 
 public class Climber extends SubsystemBase {
     SparkMax climbMotor;
     GenericPID climberPID;
-    ServoChannel climberServo;
     
     // Constructor
     public Climber() {
@@ -35,8 +32,6 @@ public class Climber extends SubsystemBase {
             .inverted(true);
         config.encoder.positionConversionFactor(CLIMBER_RATIO);
         climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-        climberServo = ServoManager.getInstance().getServoInPort(CLIMBER_SERVO_PORT);
     }
 
     /** Puts servo in position, then moves the climber  */

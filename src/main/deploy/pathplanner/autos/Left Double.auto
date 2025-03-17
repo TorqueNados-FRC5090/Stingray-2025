@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start L to J4"
+            "pathName": "Start to ER"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "ElevatorToL2"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "J4 to Pickup L"
+            "pathName": "ER to Pickup"
           }
         },
         {
@@ -43,13 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Pickup L to K4"
+            "pathName": "Pickup to FL"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "ElevatorToL4"
           }
         },
         {
@@ -67,7 +67,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "K4 to Pickup L"
+            "pathName": "FL to Pickup"
           }
         }
       ]

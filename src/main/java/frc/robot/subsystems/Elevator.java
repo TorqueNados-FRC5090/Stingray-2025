@@ -12,50 +12,62 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.UpperChassisPose;
+
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class Elevator extends SubsystemBase {
      // Declare variables
-    public SparkMax leadMotor;
-    public SparkMax followerMotor; 
+    public SparkMax elevatorLeader;
+    public SparkMax elevatorFollower; 
     public ProfiledPIDController elevatorPID;
-    public ElevatorPosition targetPosition = ElevatorPosition.ZERO;
+    public UpperChassisPose target = UpperChassisPose.ZERO;
     
 
     // Constructor 
     public Elevator() {
-        leadMotor = new SparkMax(ELEVATOR_LEFT_MOTOR_ID, MotorType.kBrushless);
-        followerMotor = new SparkMax(ELEVATOR_RIGHT_MOTOR_ID, MotorType.kBrushless);
+        // Elevator init
+        elevatorLeader = new SparkMax(ELEVATOR_LEFT_MOTOR_ID, MotorType.kBrushless);
+        elevatorFollower = new SparkMax(ELEVATOR_RIGHT_MOTOR_ID, MotorType.kBrushless);
+
         elevatorPID = new ProfiledPIDController(P_GAIN, 0, D_GAIN, 
             new Constraints(VEL_LIMIT, ACCEL_LIMIT));
         elevatorPID.setTolerance(1);
         
-        // Configure the elevator motors   
+        // Elevator config 
         SparkMaxConfig leaderConfig = new SparkMaxConfig();
-        leaderConfig.idleMode(IdleMode.kCoast);
+        leaderConfig
+            .idleMode(IdleMode.kCoast)
+            .smartCurrentLimit(40);
         leaderConfig.encoder.positionConversionFactor(ELEVATOR_RATIO);
-        leadMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         SparkMaxConfig followConfig = new SparkMaxConfig();
-        followConfig.follow(leadMotor, true)
-            .idleMode(IdleMode.kCoast);
-        followerMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
+        followConfig
+            .follow(elevatorLeader, true)
+            .idleMode(IdleMode.kCoast)
+            .smartCurrentLimit(40);
+        elevatorFollower.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
     }
 
 
     // Getters
-    public double getHeight() { return leadMotor.getEncoder().getPosition(); }
-    public boolean atSetpoint() { return elevatorPID.atSetpoint(); }
-    public ElevatorPosition getTargetPosition() { return targetPosition; }
+    public double getHeight() { return elevatorLeader.getEncoder().getPosition(); }
+    public UpperChassisPose getTargetPosition() { return target; }
+    public boolean atSetpoint() {
+        return Math.abs(getHeight() - target.getHeight()) <= 1;
+    }
 
-    public void setTargetPosition(ElevatorPosition pos) { targetPosition = pos; }
+    public void setTarget(UpperChassisPose pos) { 
+        target = pos; 
+    }
 
     /** Sends voltage to the elevator to drive it to a position */
     private void driveElevator() {
-        double pidout = elevatorPID.calculate(this.getHeight(), targetPosition.getHeight());
-        leadMotor.setVoltage(pidout * RobotController.getBatteryVoltage());
+        double pidout = elevatorPID.calculate(this.getHeight(), target.getHeight());
+        elevatorLeader.setVoltage(pidout * RobotController.getBatteryVoltage());
     }
     
 

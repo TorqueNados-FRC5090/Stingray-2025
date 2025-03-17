@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.Constants.UpperChassisPose;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -23,18 +23,22 @@ public class Robot extends TimedRobot {
 
         // Cancel any commands that may have persisted through power off or redeploy
         CommandScheduler.getInstance().cancelAll();
+
+
     }
 
     @Override
-    public void robotPeriodic() {    
-        // Always run the command scheduler to allow it to function
+    public void robotPeriodic() {
+        // Run the command scheduler constantly so it can function
         CommandScheduler.getInstance().run();
+        // Provide limelight data to the drivetrain every frame for localization
+        robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.frontLimelight);
     }
 
     @Override
     public void disabledExit() {
         // Reset the elevator's setpoint to zero on enable
-        robotContainer.elevator.setTargetPosition(ElevatorPosition.ZERO);
+        robotContainer.elevator.setTarget(UpperChassisPose.ZERO);
     }
 
     @Override
@@ -50,7 +54,8 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         // This makes sure that the autonomous command stops when teleop starts
         if (autonCommand != null)
-            autonCommand.cancel();
+            autonCommand
+            .cancel();
     }
 
     @Override
@@ -63,11 +68,11 @@ public class Robot extends TimedRobot {
     
     @Override
     public void testPeriodic() {
+        // Climber Controls
         if(testingController.getBButtonPressed())
             robotContainer.climber.manual(.25);
         else if (testingController.getBButtonReleased())
             robotContainer.climber.manual(0);
-        
         
         if(testingController.getXButtonPressed())
             robotContainer.climber.manual(-.25);
@@ -76,5 +81,19 @@ public class Robot extends TimedRobot {
 
         if(testingController.getAButtonPressed())
             robotContainer.climber.resetEncoder();
+
+        // Pivot Controls
+        if(testingController.getLeftBumperButtonPressed())
+            robotContainer.pivot.manualPivot(.2);
+        else if(testingController.getLeftBumperButtonReleased())
+            robotContainer.pivot.manualPivot(0);
+      
+        if(testingController.getRightBumperButtonPressed())
+            robotContainer.pivot.manualPivot(-.2);
+        else if(testingController.getRightBumperButtonReleased())
+            robotContainer.pivot.manualPivot(0);
+
+        if(testingController.getYButtonPressed())
+            robotContainer.pivot.resetPivotEncoder();
     }
 }

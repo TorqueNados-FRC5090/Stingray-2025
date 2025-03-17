@@ -36,12 +36,12 @@ public class AlgaeRemover extends SubsystemBase{
         SparkMaxConfig leaderMotorConfig = new SparkMaxConfig();
         leaderMotorConfig.idleMode(IdleMode.kBrake)
             .smartCurrentLimit(20)
-            .inverted(true);
+            .inverted(false);
         leaderMotorConfig.encoder.positionConversionFactor(ALGAE_RATIO);
         leftMotor.configure(leaderMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         SparkMaxConfig followMotorConfig = new SparkMaxConfig();
-        followMotorConfig.inverted(false)
+        followMotorConfig.inverted(true)
             .smartCurrentLimit(20)
             .idleMode(IdleMode.kBrake);
         followMotorConfig.encoder.positionConversionFactor(ALGAE_RATIO);

@@ -12,9 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.ElevatorConstants.ElevatorPosition;
+import frc.robot.Constants.UpperChassisPose;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shooter;
 
 /** A container that stores various procedures for the autonomous portion of the game */
@@ -22,12 +23,14 @@ public class AutonContainer {
     private CTRESwerveDrivetrain drivetrain;
     private Shooter shooter;
     private Elevator elevator;
+    private Pivot pivot;
 
     /** Constructs an AutonContainer object */ 
     public AutonContainer(RobotContainer robot) {
         this.drivetrain = robot.drivetrain;
         this.shooter = robot.shooter;
         this.elevator = robot.elevator;
+        this.pivot = robot.pivot;
         registerNamedCommands();
 
         // Attempt to load the pathplanner config from GUI
@@ -52,20 +55,20 @@ public class AutonContainer {
     }
 
     private void registerNamedCommands() {
-        NamedCommands.registerCommand("ElevatorToL4", new SetElevatorTarget(elevator, ElevatorPosition.L4));
-        NamedCommands.registerCommand("ElevatorToL2", new SetElevatorTarget(elevator, ElevatorPosition.L2));
-        NamedCommands.registerCommand("ElevatorToZero", new SetElevatorTarget(elevator, ElevatorPosition.ZERO));
-        NamedCommands.registerCommand("Shoot", shooter.shoot(.2).withTimeout(.5));
+        NamedCommands.registerCommand("ElevatorToL4", 
+            new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L4)
+                .andThen(new WaitCommand(.5)));
+        NamedCommands.registerCommand("ElevatorToL2", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L2));
+        NamedCommands.registerCommand("ElevatorToZero", new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
+        NamedCommands.registerCommand("Shoot", shooter.shoot(.5).withTimeout(.3).asProxy());
     }
 
     public SendableChooser<Command> buildAutonChooser() {
         SendableChooser<Command> chooser = new SendableChooser<Command>();
         chooser.setDefaultOption("Do Nothing", doNothing());
-        //chooser.addOption("Right Single", AutoBuilder.buildAuto("Right Single"));
-        //chooser.addOption("Left Single", AutoBuilder.buildAuto("Left Single"));
         chooser.addOption("Right 1.5", AutoBuilder.buildAuto("Right 1 and Half"));
-        chooser.addOption("Left 1.5", AutoBuilder.buildAuto("Left 1 and Half"));
-        //chooser.addOption("Center Single", AutoBuilder.buildAuto("Center Single"));
+        chooser.addOption("Left Double", AutoBuilder.buildAuto("Left Double"));
+        chooser.addOption("Center Single", AutoBuilder.buildAuto("Center Single"));
         return chooser;
     }
 

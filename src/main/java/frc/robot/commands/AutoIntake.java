@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
@@ -8,17 +9,18 @@ public class AutoIntake extends Command {
     private Shooter shooter;
     private IntakeState state;
 
+    private Timer reverseTimer;
     private boolean entry;
     private boolean exit;
 
     /** A list of the states the intake can be in */
     public enum IntakeState {
         /** Sets the intake to a fast speed, ideal for getting a good hold on a piece */
-        WAITING(.3),
+        WAITING(.5),
         /** Sets the intake to a slow speed, ideal for indexing a piece */
-        INDEXING(.13),
+        INDEXING(.3),
         /** Stops the intake, as to not overshoot the piece */
-        HOLDING(0);
+        HOLDING(-.1);
 
         public double speed;
         private IntakeState(double speed) { this.speed = speed; }
@@ -36,6 +38,7 @@ public class AutoIntake extends Command {
      */
     public AutoIntake(Shooter shooter) {
         this.shooter = shooter;
+        reverseTimer = new Timer();
         addRequirements(shooter);
     }
 
@@ -43,6 +46,8 @@ public class AutoIntake extends Command {
     @Override
     public void initialize() {
         pollSensors();
+        reverseTimer.stop();
+        reverseTimer.reset();
         
         if(exit &&  !entry) { // Hold if we already have a piece loaded correctly
             enterState(IntakeState.HOLDING);
@@ -83,6 +88,7 @@ public class AutoIntake extends Command {
 
             case HOLDING: // If there is not a piece in the intake, go back to waiting
                 if(!entry && !exit) { enterState(IntakeState.WAITING); }
+                else if(reverseTimer.hasElapsed(.6)) { shooter.stop(); }
                 break;
         
             // If in an invalid state, transition to done
@@ -92,7 +98,10 @@ public class AutoIntake extends Command {
 
     private void enterState(IntakeState destination) {
         shooter.spin(destination.speed);
+        if (destination == IntakeState.HOLDING) {
+            reverseTimer.reset();
+            reverseTimer.start();
+        }
         state = destination;
     }
-
 }

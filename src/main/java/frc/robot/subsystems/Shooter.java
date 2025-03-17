@@ -1,42 +1,37 @@
 package frc.robot.subsystems;
 
-
-import com.revrobotics.spark.SparkFlex;
+import static frc.robot.Constants.ShooterConstants.P_GAIN;
 import static frc.robot.Constants.SubsystemIDs.SHOOTER_ENTRY_SENSOR_ID;
 import static frc.robot.Constants.SubsystemIDs.SHOOTER_EXIT_SENSOR_ID;
-import static frc.robot.Constants.SubsystemIDs.SHOOTER_LEFT_MOTOR_ID;
-import static frc.robot.Constants.SubsystemIDs.SHOOTER_RIGHT_MOTOR_ID;
-import static frc.robot.Constants.ShooterConstants.*;
+import static frc.robot.Constants.SubsystemIDs.SHOOTER_MOTOR_ID;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.reduxrobotics.sensors.canandcolor.Canandcolor;
 import com.reduxrobotics.sensors.canandcolor.CanandcolorSettings;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
-    SparkFlex leadMotor;
-    SparkFlex followMotor;
-
+    TalonFX leadMotor;
     Canandcolor entrySensor;
     Canandcolor exitSensor;  
     
     public Shooter(){
-        leadMotor = new SparkFlex(SHOOTER_LEFT_MOTOR_ID, MotorType.kBrushless);
-        followMotor = new SparkFlex(SHOOTER_RIGHT_MOTOR_ID, MotorType.kBrushless);
-        
+        leadMotor = new TalonFX(SHOOTER_MOTOR_ID);
+
         // Configure the motors
-        SparkMaxConfig leaderConfig = new SparkMaxConfig();
-        SparkMaxConfig followConfig = new SparkMaxConfig();
-        leaderConfig.encoder.positionConversionFactor(SHOOTER_RATIO);
-        leadMotor.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        followConfig.follow(leadMotor, true);
-        followMotor.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
+        TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
+        leaderConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        leaderConfig.Slot0.kP = P_GAIN;
+        leadMotor.getConfigurator().apply(leaderConfig);
+        
         
         // Initialize and configure the sensors
         entrySensor = new Canandcolor(SHOOTER_ENTRY_SENSOR_ID);
@@ -61,15 +56,19 @@ public class Shooter extends SubsystemBase {
 
 
     public void spin(double speed) { 
-        leadMotor.set(speed); 
+        leadMotor.setControl(new VoltageOut(speed * RobotController.getBatteryVoltage())); 
     }
     public void stop() { 
-        leadMotor.stopMotor(); 
+        leadMotor.setControl(new VoltageOut(0)); 
+    }
+    public void setSetpoint() {
+        PositionVoltage request = new PositionVoltage(0).withSlot(0);
+        leadMotor.setControl(request);
     }
 
-    public void setEncoder(double position) { leadMotor.getEncoder().setPosition(position); }
-    public double getPosition() { return leadMotor.getEncoder().getPosition(); }
-    public double getVelocity() { return leadMotor.getEncoder().getVelocity(); }
+    public void setEncoder(double position) { leadMotor.setPosition(position); }
+    public double getPosition() { return leadMotor.getPosition().getValueAsDouble(); }
+    public double getVelocity() { return leadMotor.getVelocity().getValueAsDouble(); }
 
     /** @return Whether there is a piece in front of the sensor at the end of the shooter */
     public boolean isEntrySensorBlocked() { return entrySensor.getProximity() <= .05; }
