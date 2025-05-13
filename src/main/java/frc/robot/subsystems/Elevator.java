@@ -4,6 +4,14 @@ import static frc.robot.Constants.ElevatorConstants.*;
 import static frc.robot.Constants.SubsystemIDs.ELEVATOR_LEFT_MOTOR_ID;
 import static frc.robot.Constants.SubsystemIDs.ELEVATOR_RIGHT_MOTOR_ID;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -20,63 +28,73 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class Elevator extends SubsystemBase {
      // Declare variables
-    public SparkMax elevatorLeader;
-    public SparkMax elevatorFollower; 
-    public ProfiledPIDController elevatorPID;
+    public TalonFX elevatorLeader;
+    public TalonFX elevatorFollower; 
     public UpperChassisPose target = UpperChassisPose.ZERO;
     
 
     // Constructor 
     public Elevator() {
         // Elevator init
-        elevatorLeader = new SparkMax(ELEVATOR_LEFT_MOTOR_ID, MotorType.kBrushless);
-        elevatorFollower = new SparkMax(ELEVATOR_RIGHT_MOTOR_ID, MotorType.kBrushless);
+        elevatorLeader = new TalonFX(ELEVATOR_LEFT_MOTOR_ID);
+        elevatorFollower = new TalonFX(ELEVATOR_RIGHT_MOTOR_ID);
 
-        elevatorPID = new ProfiledPIDController(P_GAIN, 0, D_GAIN, 
-            new Constraints(VEL_LIMIT, ACCEL_LIMIT));
-        elevatorPID.setTolerance(1);
-        
+       
         // Elevator config 
-        SparkMaxConfig leaderConfig = new SparkMaxConfig();
-        leaderConfig
-            .idleMode(IdleMode.kCoast)
-            .smartCurrentLimit(40);
-        leaderConfig.encoder.positionConversionFactor(ELEVATOR_RATIO);
-        elevatorLeader.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
+        leaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        elevatorLeader.getConfigurator().apply(leaderConfig);
+         
+      //Elevator PID config
+       Slot0Configs elevatorPIDConfig = new Slot0Configs();
+        elevatorPIDConfig.kP = P_GAIN;
+        elevatorPIDConfig.kD = D_GAIN;
+        elevatorLeader.getConfigurator().apply(elevatorPIDConfig);
+   
+        MotionMagicConfigs motionMagicConfigs = new TalonFXConfiguration().MotionMagic;
+      
+        // Velocity is in RPS
+        motionMagicConfigs.MotionMagicCruiseVelocity = 100;
+
+        //Acceleration is in RPS/S
+        motionMagicConfigs.MotionMagicAcceleration = 60;
+
+        // Jerk is RPS/S/S
+        motionMagicConfigs.MotionMagicJerk = 1600;
         
-        SparkMaxConfig followConfig = new SparkMaxConfig();
-        followConfig
-            .follow(elevatorLeader, true)
-            .idleMode(IdleMode.kCoast)
-            .smartCurrentLimit(40);
-        elevatorFollower.configure(followConfig, ResetMode.kResetSafeParameters , PersistMode.kPersistParameters);
+
+        elevatorLeader.getConfigurator().apply(motionMagicConfigs);
+
+        
+        TalonFXConfiguration followConfig = new TalonFXConfiguration();
+        followConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    elevatorFollower.getConfigurator().apply(followConfig);
+    elevatorFollower.setControl(new Follower(elevatorLeader.getDeviceID(), true));
     }
 
 
     // Getters
-    public double getHeight() { return elevatorLeader.getEncoder().getPosition(); }
+    public double getHeight() { return elevatorLeader.getPosition().getValueAsDouble(); }
+    public double getVelocity() { return elevatorLeader.getVelocity().getValueAsDouble(); }
     public UpperChassisPose getTargetPosition() { return target; }
     public boolean atSetpoint() {
         return Math.abs(getHeight() - target.getHeight()) <= 1;
     }
 
     public void setTarget(UpperChassisPose pos) { 
-        target = pos; 
+        PositionVoltage elevatorRequest = new PositionVoltage(pos.getHeight()).withSlot(0);
+        elevatorLeader.setControl(elevatorRequest); 
     }
-
-    /** Sends voltage to the elevator to drive it to a position */
-    private void driveElevator() {
-        double pidout = elevatorPID.calculate(this.getHeight(), target.getHeight());
-        elevatorLeader.setVoltage(pidout * RobotController.getBatteryVoltage());
-    }
-    
+     
+     
 
     @Override
     public void periodic(){
-        driveElevator();
+        
 
         SmartDashboard.putNumber("Elevator Height", getHeight());
         SmartDashboard.putString("Elevator Target Position", getTargetPosition().toString());
         SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
+        SmartDashboard.putNumber("Elevator Velocity", getVelocity());
     }
 }
