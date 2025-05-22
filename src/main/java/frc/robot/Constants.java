@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import frc.robot.wrappers.LimitSwitch;
 
 /* 
  * To access numbers in this file, import or statically import one of its subclasses:
@@ -36,7 +37,7 @@ public final class Constants {
         public static final int CLIMBER_MOTOR_ID = 12;
 
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
-        public static final int ELEVATOR_RIGHT_MOTOR_ID = 16;
+        public static final int ELEVATOR_RIGHT_MOTOR_ID = 37;  //161
         public static final int PIVOT_MOTOR_ID = 11;
 
         public static final int ALGAE_LEFT_MOTOR_ID = 17;
@@ -44,7 +45,7 @@ public final class Constants {
 
         public static final int SHOOTER_ENTRY_SENSOR_ID = 20;
         public static final int SHOOTER_EXIT_SENSOR_ID = 21;
-        public static final int SHOOTER_MOTOR_ID = 10;
+        public static final int SHOOTER_MOTOR_ID = 10; //10
     }
 
     /* -------------- SUBSYTEM CONSTANTS -------------- */
@@ -108,8 +109,8 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final double P_GAIN = .225;
-        public static final double D_GAIN = .005;
+        public static final double P_GAIN = .5;
+        public static final double D_GAIN = .1;
         public static final double VEL_LIMIT = 100;
         public static final double ACCEL_LIMIT = 59;
         
@@ -123,11 +124,11 @@ public final class Constants {
     }
 
     public enum UpperChassisPose {
-        ZERO(0, 0),
-        TROUGH(3, 0),
-        L2(9.4, 20),
-        L3(25.1, 20),
-        L4( 55.4, 75);
+        ZERO(0, 0), 
+        TROUGH(4.4, 0), // 3
+        L2(12.1, 20), //9.4, 11.3
+        L3(32.7, 20), // 25.1, 32
+        L4( 74, 75); // 55.4, 73
         
         private double height;
         private double angle;
