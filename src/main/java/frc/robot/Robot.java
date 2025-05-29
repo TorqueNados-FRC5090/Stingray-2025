@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
         // Run the command scheduler constantly so it can function
         CommandScheduler.getInstance().run();
         // Provide limelight data to the drivetrain every frame for localization
-        robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.frontLimelight);
+        robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.rightLimelight);
     }
 
     @Override
