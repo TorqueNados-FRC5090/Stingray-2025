@@ -104,7 +104,7 @@ public class RobotContainer {
         // Put the robot in brake mode while X is held
         driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
-        driverController.rightTrigger().whileTrue(shooter.shoot(.4));
+        driverController.leftBumper().whileTrue(shooter.shoot(.4));
         
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
         driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
@@ -112,10 +112,8 @@ public class RobotContainer {
     
     /** Configures a set of control bindings for the robot's operator */
     private void setOperatorControls() {
-        // When a button is pressed, start going to its position, return to zero when button is released
-        operatorController.a().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.TROUGH))
-            .onFalse(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));                
-        operatorController.b().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L2))
+        // When a button is pressed, start going to its position, return to zero when button is released              
+        operatorController.a().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L2))
             .onFalse(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));
         operatorController.x().onTrue(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.L3))
             .onFalse(new SetUpperChassisPose(elevator, pivot, UpperChassisPose.ZERO));

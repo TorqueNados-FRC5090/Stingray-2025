@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import frc.robot.wrappers.LimitSwitch;
 
 /* 
  * To access numbers in this file, import or statically import one of its subclasses:
@@ -110,9 +109,11 @@ public final class Constants {
 
     public static final class ElevatorConstants {
         public static final double P_GAIN = .5;
-        public static final double D_GAIN = .1;
-        public static final double VEL_LIMIT = 100;
-        public static final double ACCEL_LIMIT = 59;
+        public static final double D_GAIN = .005;
+        public static final double G_GAIN = .5;
+        public static final double VEL_LIMIT = 1000;
+        public static final double ACCEL_LIMIT = 60;
+        public static final double JERK_LIMIT = 1600;
         
         /** Converts elevator motor revolutions to inches of shooter travel */
         public static final double ELEVATOR_RATIO = 1 / (25.4 * (1 / 19.189168));
@@ -126,9 +127,9 @@ public final class Constants {
     public enum UpperChassisPose {
         ZERO(0, 0), 
         TROUGH(4.4, 0), // 3
-        L2(12.1, 20), //9.4, 11.3
-        L3(32.7, 20), // 25.1, 32
-        L4( 74, 75); // 55.4, 73
+        L2(4.03, 20), //9.4, 11.3
+        L3(11.31, 20), // 25.1, 32
+        L4( 25.6, 75); // 55.4, 73
         
         private double height;
         private double angle;

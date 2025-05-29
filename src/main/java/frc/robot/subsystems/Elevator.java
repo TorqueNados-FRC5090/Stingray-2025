@@ -14,7 +14,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.UpperChassisPose;
-import frc.robot.wrappers.LimitSwitch;
 
 
 public class Elevator extends SubsystemBase {
@@ -29,7 +28,7 @@ public class Elevator extends SubsystemBase {
     public Elevator() {
     
         canDi = new CANdi(34); 
-        
+    
         // Elevator init
         elevatorLeader = new TalonFX(ELEVATOR_LEFT_MOTOR_ID);
         elevatorFollower = new TalonFX(ELEVATOR_RIGHT_MOTOR_ID);
@@ -43,20 +42,20 @@ public class Elevator extends SubsystemBase {
       //Elevator PID config
        Slot0Configs elevatorPIDConfig = new Slot0Configs();
         elevatorPIDConfig.kP = P_GAIN;
-        elevatorPIDConfig.kD = D_GAIN;  //change .1
-        elevatorPIDConfig.kG = 0.2;
+        elevatorPIDConfig.kD = D_GAIN; 
+        elevatorPIDConfig.kG = G_GAIN;
         elevatorLeader.getConfigurator().apply(elevatorPIDConfig);
    
         MotionMagicConfigs motionMagicConfigs = new TalonFXConfiguration().MotionMagic;
       
         // Velocity is in RPS
-        motionMagicConfigs.MotionMagicCruiseVelocity = 100;
+        motionMagicConfigs.MotionMagicCruiseVelocity = VEL_LIMIT;
 
         //Acceleration is in RPS/S
-        motionMagicConfigs.MotionMagicAcceleration = 15;
+        motionMagicConfigs.MotionMagicAcceleration = ACCEL_LIMIT;
 
         // Jerk is RPS/S/S
-        motionMagicConfigs.MotionMagicJerk = 50;
+        motionMagicConfigs.MotionMagicJerk = JERK_LIMIT;
         
 
         elevatorLeader.getConfigurator().apply(motionMagicConfigs);
@@ -74,7 +73,7 @@ public class Elevator extends SubsystemBase {
     public double getVelocity() { return elevatorLeader.getVelocity().getValueAsDouble(); }
     public UpperChassisPose getTargetPosition() { return target; }
     public boolean atSetpoint() {
-        return Math.abs(getHeight() - target.getHeight()) <= 1;
+        return Math.abs(getHeight() - target.getHeight()) <= 2;
     }
     public boolean isPressed(){
     if(canDi.getS1Closed().getValue()){
@@ -102,7 +101,7 @@ public class Elevator extends SubsystemBase {
          if( isPressed())
                 elevatorLeader.setPosition(0.0);   
         SmartDashboard.putNumber("Elevator Height", getHeight());
-        SmartDashboard.putString("Elevator Target Position", getTargetPosition().toString());
+        SmartDashboard.putString("Elevator Target Position",getTargetPosition().toString());
         SmartDashboard.putBoolean("Elevator at Setpoint", atSetpoint());
         SmartDashboard.putNumber("Elevator Velocity", getVelocity());
         SmartDashboard.putBoolean("Pressed", isPressed());
