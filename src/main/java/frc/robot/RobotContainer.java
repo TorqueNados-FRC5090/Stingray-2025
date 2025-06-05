@@ -40,6 +40,7 @@ public class RobotContainer {
     // Subsystems
     public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Limelight rightLimelight = new Limelight("limelight-bestman");
+    public final Limelight leftLimelight = new Limelight("limelight-michel");
     public final Funnel funnel = new Funnel();
     public final Shooter shooter = new Shooter();
     public final Climber climber = new Climber();
@@ -104,7 +105,7 @@ public class RobotContainer {
         // Put the robot in brake mode while X is held
         driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
-        driverController.leftBumper().whileTrue(shooter.shoot(.4));
+        driverController.leftTrigger().whileTrue(shooter.shoot(.4));
         
         driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
         driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));

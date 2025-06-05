@@ -108,7 +108,7 @@ public final class Constants {
     }
 
     public static final class ElevatorConstants {
-        public static final double P_GAIN = .5;
+        public static final double P_GAIN = .6;
         public static final double D_GAIN = .005;
         public static final double G_GAIN = .5;
         public static final double VEL_LIMIT = 1000;
@@ -126,10 +126,10 @@ public final class Constants {
 
     public enum UpperChassisPose {
         ZERO(0, 0), 
-        TROUGH(4.4, 0), // 3
-        L2(4.03, 20), //9.4, 11.3
-        L3(11.31, 20), // 25.1, 32
-        L4( 25.6, 75); // 55.4, 73
+        TROUGH(5.4, 0), // 3
+        L2(5.03, 20), //9.4, 11.3
+        L3(12.31, 20), // 25.1, 32
+        L4( 26.6, 75); // 55.4, 73
         
         private double height;
         private double angle;

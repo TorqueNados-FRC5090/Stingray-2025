@@ -73,7 +73,7 @@ public class Elevator extends SubsystemBase {
     public double getVelocity() { return elevatorLeader.getVelocity().getValueAsDouble(); }
     public UpperChassisPose getTargetPosition() { return target; }
     public boolean atSetpoint() {
-        return Math.abs(getHeight() - target.getHeight()) <= 2;
+        return Math.abs(getHeight() - target.getHeight()) <= 1;
     }
     public boolean isPressed(){
     if(canDi.getS1Closed().getValue()){
