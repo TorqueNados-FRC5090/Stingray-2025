@@ -36,7 +36,7 @@ public class Elevator extends SubsystemBase {
        
         // Elevator config 
         TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
-        leaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        leaderConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         elevatorLeader.getConfigurator().apply(leaderConfig);
          
       //Elevator PID config
@@ -62,7 +62,7 @@ public class Elevator extends SubsystemBase {
 
         
         TalonFXConfiguration followConfig = new TalonFXConfiguration();
-        followConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        followConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     elevatorFollower.getConfigurator().apply(followConfig);
     elevatorFollower.setControl(new Follower(elevatorLeader.getDeviceID(), true));
     }

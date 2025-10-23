@@ -127,9 +127,9 @@ public final class Constants {
     public enum UpperChassisPose {
         ZERO(0, 0), 
         TROUGH(5.4, 0), // 3
-        L2(5.03, 20), //9.4, 11.3
+        L2(4.6, 20), //9.4, 11.3
         L3(12.31, 20), // 25.1, 32
-        L4( 26.6, 75); // 55.4, 73
+        L4( 26.2, 45); // 55.4, 75
         
         private double height;
         private double angle;

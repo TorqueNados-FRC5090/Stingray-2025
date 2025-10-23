@@ -90,7 +90,7 @@ public class RobotContainer {
                     if (driverController.leftTrigger().getAsBoolean() || driverController.leftBumper().getAsBoolean()) 
                         return .6;
                     else if (elevator.getHeight() > 30)
-                        return .4;
+                        return .5;
                     else
                         return 1;
                 },
