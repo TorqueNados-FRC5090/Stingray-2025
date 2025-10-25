@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ElevatorToL2"
+            "name": "ElevatorToL4"
           }
         },
         {
@@ -32,30 +32,6 @@
           "type": "named",
           "data": {
             "name": "Shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ElevatorToZero"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ElevatorToL4"
           }
         },
         {
@@ -85,7 +61,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Pickup to BR"
+            "pathName": "Pickup to AL"
           }
         },
         {
@@ -107,6 +83,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 0.25
@@ -115,19 +97,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ElevatorToZero"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BR to Pickup"
           }
         }
       ]
