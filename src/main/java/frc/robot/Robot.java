@@ -1,11 +1,13 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.UpperChassisPose;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 public class Robot extends TimedRobot {
@@ -33,7 +35,7 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         // Provide limelight data to the drivetrain every frame for localization
         robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.rightLimelight);
-        robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.leftLimelight);
+        //robotContainer.drivetrain.addMeasurementFromLimelight(robotContainer.leftLimelight);
     }
 
     @Override
@@ -70,6 +72,8 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         // Climber Controls
+
+        /* 
         if(testingController.getBButtonPressed())
             robotContainer.climber.manual(.25);
         else if (testingController.getBButtonReleased())
@@ -82,7 +86,7 @@ public class Robot extends TimedRobot {
 
         if(testingController.getAButtonPressed())
             robotContainer.climber.resetEncoder();
-
+        */
         // Pivot Controls
         if(testingController.getLeftBumperButtonPressed())
             robotContainer.pivot.manualPivot(.2);

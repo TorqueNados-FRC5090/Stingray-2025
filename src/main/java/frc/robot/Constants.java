@@ -33,7 +33,7 @@ public final class Constants {
         public static final int RIO_SERVO_PORT = 2;
         public static final int CANDLE_ID = 13;
 
-        public static final int CLIMBER_MOTOR_ID = 12;
+        //public static final int CLIMBER_MOTOR_ID = 12;
 
         public static final int ELEVATOR_LEFT_MOTOR_ID = 15;
         public static final int ELEVATOR_RIGHT_MOTOR_ID = 37;  //161
@@ -80,19 +80,19 @@ public final class Constants {
         }
     }
 
-
+/* 
     public static final class ClimberConstants {
         public static final double P_GAIN = .27;
 
-        /** Converts climber motor revolutions to degrees of climber travel */
+        // Converts climber motor revolutions to degrees of climber travel 
         public static final double CLIMBER_RATIO = 360.0/900.0;
 
         public enum ClimberPosition {
-            /** Vertical */
+            // Vertical 
             ZERO(0),
-            /** Out of robot, used to line up with cage */
+            // Out of robot, used to line up with cage 
             PREPARE(80),
-            /** Inside robot, used when engaged with cage */
+            // Inside robot, used when engaged with cage 
             CLIMB(-120);
 
             private double setpoint;
@@ -100,12 +100,13 @@ public final class Constants {
                 this.setpoint = setpoint;
             };
 
-            /** @return The angle of the climber associated with the setpoint */
+            // @return The angle of the climber associated with the setpoint 
             public double getAngle() {
                 return setpoint;
             }
         }
     }
+    */
 
     public static final class ElevatorConstants {
         public static final double P_GAIN = .6;

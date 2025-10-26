@@ -13,10 +13,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.UpperChassisPose;
 import frc.robot.Constants.AlgaeConstants.AlgaePosition;
-import frc.robot.Constants.ClimberConstants.ClimberPosition;
+//import frc.robot.Constants.ClimberConstants.ClimberPosition;
 import frc.robot.commands.AutoIntake;
 import frc.robot.commands.AutonContainer;
 import frc.robot.commands.DriveCommand;
@@ -24,7 +25,7 @@ import frc.robot.commands.LEDControl;
 import frc.robot.commands.SetUpperChassisPose;
 import frc.robot.subsystems.CTRESwerveDrivetrain;
 import frc.robot.subsystems.Candle;
-import frc.robot.subsystems.Climber;
+//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Funnel;
 import frc.robot.subsystems.Elevator;
 import frc.robot.wrappers.Limelight;
@@ -40,10 +41,10 @@ public class RobotContainer {
     // Subsystems
     public final CTRESwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final Limelight rightLimelight = new Limelight("limelight-bestman");
-    public final Limelight leftLimelight = new Limelight("limelight-michel");
+    //public final Limelight leftLimelight = new Limelight("limelight-michel");
     public final Funnel funnel = new Funnel();
     public final Shooter shooter = new Shooter();
-    public final Climber climber = new Climber();
+    //public final Climber climber = new Climber();
     public final Elevator elevator = new Elevator();
     public final Candle candleLEDS = new Candle();
     public final AlgaeRemover algaeRemover = new AlgaeRemover();
@@ -101,14 +102,31 @@ public class RobotContainer {
         );
 
         // Reset the field-centric heading on A press
-        driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        driverController.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()).andThen(new InstantCommand(() -> logresetheading())));
+        driverController.leftBumper().onTrue((new InstantCommand(() -> logbummerpress())));
+                
         // Put the robot in brake mode while X is held
         driverController.a().whileTrue(drivetrain.applyRequest(() -> new SwerveRequest.SwerveDriveBrake()));
 
         driverController.leftTrigger().whileTrue(shooter.shoot(.4));
+
         
-        driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
-        driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
+        
+        //driverController.pov(0).onTrue(climber.climbToPosition(ClimberPosition.ZERO));
+        //driverController.pov(90).onTrue(climber.climbToPosition(ClimberPosition.PREPARE));
+    }
+
+    public double counter = 0;
+    public double counter2 = 0;
+
+    public void logresetheading(){
+        counter++;
+        SmartDashboard.putNumber("Start Button", counter);        
+    }
+
+    public void logbummerpress(){
+        counter2++;
+        SmartDashboard.putNumber("Start Button", counter2);        
     }
     
     /** Configures a set of control bindings for the robot's operator */
@@ -127,11 +145,11 @@ public class RobotContainer {
             .alongWith(shooter.shoot(-.5))
         );
         
-        operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
-        operatorController.pov(90).onTrue(
-            climber.climbToPosition(ClimberPosition.CLIMB)
-                .onlyIf(() -> funnel.hasBeenDropped())
-        );
+        //operatorController.start().and(operatorController.back()).whileTrue(funnel.funnelDrop());
+        //operatorController.pov(90).onTrue(
+        //    climber.climbToPosition(ClimberPosition.CLIMB)
+        //        .onlyIf(() -> funnel.hasBeenDropped())
+        //);
 
         operatorController.leftTrigger().whileTrue(driveToPose(FieldConstants.ReefFace.F.getRightBranchGoalBlue()));
         operatorController.rightTrigger().whileTrue(driveToPose(FieldConstants.ReefFace.B.getLeftBranchGoalBlue()));
