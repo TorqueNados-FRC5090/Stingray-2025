@@ -126,7 +126,7 @@ public class RobotContainer {
 
     public void logbummerpress(){
         counter2++;
-        SmartDashboard.putNumber("Start Button", counter2);        
+        SmartDashboard.putNumber("Start Pressed", counter2);        
     }
     
     /** Configures a set of control bindings for the robot's operator */

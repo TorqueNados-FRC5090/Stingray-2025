@@ -130,7 +130,7 @@ public final class Constants {
         TROUGH(5.4, 0), // 3
         L2(4.6, 24), //9.4, 11.3
         L3(12.51, 24), // 25.1, 32
-        L4( 26.2, 60); // 55.4, 75
+        L4( 26.2, 61); // 55.4, 75
         
         private double height;
         private double angle;

@@ -43,7 +43,7 @@
                 "IsStandaloneFx": false
             },
             "IsEncoderInverted": false,
-            "IsSteerInverted": true,
+            "IsSteerInverted": false,
             "SelectedEncoderType": "CANcoder",
             "EncoderOffset": 0.227783203125,
             "DriveMotorSelectionState": 1,
@@ -95,7 +95,7 @@
                 "IsStandaloneFx": false
             },
             "IsEncoderInverted": false,
-            "IsSteerInverted": true,
+            "IsSteerInverted": false,
             "SelectedEncoderType": "CANcoder",
             "EncoderOffset": -0.303466796875,
             "DriveMotorSelectionState": 1,
@@ -147,7 +147,7 @@
                 "IsStandaloneFx": false
             },
             "IsEncoderInverted": false,
-            "IsSteerInverted": true,
+            "IsSteerInverted": false,
             "SelectedEncoderType": "CANcoder",
             "EncoderOffset": 0.12255859375,
             "DriveMotorSelectionState": 1,
@@ -199,7 +199,7 @@
                 "IsStandaloneFx": false
             },
             "IsEncoderInverted": false,
-            "IsSteerInverted": true,
+            "IsSteerInverted": false,
             "SelectedEncoderType": "CANcoder",
             "EncoderOffset": -0.49609375,
             "DriveMotorSelectionState": 1,
